@@ -16,16 +16,7 @@ async function pressed() {
 
 <template>
   <li class="flex flex-row px-3 py-1 hover-bg select-text">
-    <!-- profile pic -->
-    <!--    <UAvatar-->
-    <!--      size="xl"-->
-    <!--      :src="`/avatars/${props.pic}`"-->
-    <!--      :alt="props.name[0].toUpperCase()"-->
-    <!--      @click="pressed"-->
-    <!--      class="cursor-pointer"-->
-    <!--    ></UAvatar>-->
-    <Avatar :size="10" :pic="pic" :name="name" :pressed="pressed" />
-
+    <Avatar size="10" :pic="pic" :name="name" :pressed="pressed" />
     <div class="flex flex-col pl-3">
       <div class="flex flex-row">
         <!-- name -->
