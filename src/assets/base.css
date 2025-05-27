@@ -1,0 +1,76 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme static {
+  --color-diskord: rgb(66, 68, 75);
+}
+
+@layer base {
+  .theme-1 {
+    @apply text-white;
+    @apply bg-linear-to-tr;
+    @apply from-purple-500;
+    /* @apply dark:from-purple-950; */
+    @apply via-blue-500;
+    /* @apply dark:via-blue-950; */
+    @apply via-30%;
+    @apply to-pink-500;
+    /* @apply dark:to-pink-950; */
+  }
+
+  .theme-diskord {
+    @apply text-white;
+    @apply bg-diskord;
+  }
+
+
+  button {
+    /* @apply border; */
+    /* @apply rounded; */
+    /* @apply bg-green-600 dark:bg-green-950; */
+    @apply cursor-pointer;
+  }
+
+  a {
+    @apply underline;
+    @apply mx-2;
+  }
+
+  /* these only work on chromium browsers */
+  ::-webkit-scrollbar {
+    @apply w-1.5;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-white/25;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-white/50;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hover {
+    @apply [scrollbar-width:none];
+    @apply hover:[scrollbar-width:auto];
+  }
+
+  .scrollbar-hidden {
+    @apply [scrollbar-width:none];
+  }
+
+  .hover-bg {
+    @apply hover:bg-white/5;
+    /* @apply transition duration-200 ease-in-out; */
+    /*@apply rounded-md;*/
+  }
+}
