@@ -16,7 +16,7 @@ async function pressed() {
 
 <template>
   <li class="flex flex-row px-3 py-1 hover-bg select-text">
-    <Avatar size="10" :pic="pic" :name="name" :pressed="pressed" />
+    <Avatar size="40" :pic="pic" :name="name" :pressed="pressed" />
     <div class="flex flex-col pl-3">
       <div class="flex flex-row">
         <!-- name -->
