@@ -14,7 +14,14 @@ axios
   .get<ChannelModel[]>("/Api/Channel/All/" + route.params.server)
   .then(function (res) {
     channels.value = res.data;
-    selectChannel(channels.value[0].id);
+    const lastChannel = localStorage.getItem(
+      ("last-channel-on-" + route.params.server) as string,
+    );
+    if (lastChannel) {
+      selectChannel(lastChannel);
+    } else {
+      selectChannel(channels.value[0].id);
+    }
   })
   .catch((error) => {
     console.error(error);
@@ -38,6 +45,10 @@ function addChannel() {
 
 function selectChannel(channelId: string) {
   if (isChannelSelected(channelId)) return;
+  localStorage.setItem(
+    ("last-channel-on-" + route.params.server) as string,
+    channelId,
+  );
   router.push(`/chat/${route.params.server}/${channelId}`);
 }
 
@@ -53,7 +64,7 @@ function isChannelSelected(channelId: string): boolean {
   <div class="flex flex-col min-w-60 max-w-60 grow overflow-y-auto">
     <Top>
       <span>
-        {{ useRoute().params.server }}
+        {{ route.params.server }}
       </span>
     </Top>
     <div
