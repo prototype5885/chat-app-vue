@@ -11,6 +11,8 @@ const route = useRoute();
 const DM = "dm";
 const ADD_SERVER = "add-server";
 
+const theme = "diskord";
+
 const serverList = ref<ServerModel[]>([]);
 
 // these are so channel list will re render when server changes
@@ -78,7 +80,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="flex flex-row h-screen select-none theme-diskord">
+  <div class="flex flex-row h-screen select-none" :class="`theme-${theme}`">
     <ul
       class="min-w-18 max-w-18 bg-black/45 overflow-y-auto scrollbar-hidden flex flex-col items-center py-2"
     >
