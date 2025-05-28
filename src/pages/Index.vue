@@ -8,6 +8,7 @@ import axios from "axios";
 const mode = useColorMode();
 
 const loggedIn = ref<boolean>(false);
+const loading = ref<boolean>(true);
 
 axios
   .get("/Api/IsLoggedIn")
@@ -15,6 +16,7 @@ axios
     console.log(response.status);
     if (response.status === 200) {
       loggedIn.value = true;
+      loading.value = false;
     }
   })
   .catch((e) => {
@@ -44,20 +46,15 @@ const items = ref<NavigationMenuItem[]>([
         @click="mode = mode === 'dark' ? 'light' : 'dark'"
       />
       <UButton
-        v-if="loggedIn"
-        label="Open chat"
+        :loading="loading"
+        :label="loggedIn ? 'Open Chat' : 'Login'"
         @click="
           () => {
-            router.push('/chat');
-          }
-        "
-      />
-      <UButton
-        v-else
-        label="Login"
-        @click="
-          () => {
-            router.push('/login');
+            if (loggedIn) {
+              router.push('/chat');
+            } else {
+              router.push('/login');
+            }
           }
         "
       />
