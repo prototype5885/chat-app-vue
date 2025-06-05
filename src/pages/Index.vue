@@ -13,7 +13,6 @@ const loading = ref<boolean>(true);
 axios
   .get("/Api/IsLoggedIn")
   .then(function (response) {
-    console.log(response.status);
     if (response.status === 200) {
       loggedIn.value = true;
       loading.value = false;
@@ -21,6 +20,7 @@ axios
   })
   .catch((e) => {
     loggedIn.value = false;
+    loading.value = false;
   });
 
 const items = ref<NavigationMenuItem[]>([
