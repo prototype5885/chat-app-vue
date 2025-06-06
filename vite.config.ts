@@ -17,11 +17,11 @@ export default defineConfig({
   server: {
     port: 80,
     proxy: {
-      "/Api": {
+      "/api": {
         target: "http://localhost:5083",
         changeOrigin: true,
       },
-      "/Chat": {
+      "/chat": {
         target: "http://localhost:5083",
         changeOrigin: true,
         ws: true,
