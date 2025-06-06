@@ -16,17 +16,14 @@ const loginForm = reactive<LoginForm>({
 const rememberMe = ref<boolean>(false);
 
 const errorResponse = ref<string>();
-const isLoading = ref<boolean>(false);
 
 async function submit() {
-  isLoading.value = true;
+  errorResponse.value = "";
 
-  let path = "/Api/Auth/login";
+  let path = "/api/auth/login";
 
   if (rememberMe.value === true) {
-    path += "?useCookies=true";
-  } else {
-    path += "?useSessionCookies=true";
+    path += "?rememberMe=true";
   }
 
   await axios
@@ -39,14 +36,7 @@ async function submit() {
       }
     })
     .catch((error) => {
-      if (error.response.status === 401) {
-        errorResponse.value = "Incorrect login";
-      } else {
-        errorResponse.value = error.response.statusText;
-      }
-    })
-    .finally(function () {
-      isLoading.value = false;
+      errorResponse.value = error.response.statusText;
     });
 }
 </script>
@@ -63,8 +53,6 @@ async function submit() {
           v-model="loginForm.email"
           placeholder="Enter your email"
           class="w-64"
-          type="email"
-          required
         />
       </UFormField>
       <UFormField label="Password" name="password" required>
@@ -73,14 +61,11 @@ async function submit() {
           placeholder="Enter your password"
           class="w-64"
           type="password"
-          required
         />
       </UFormField>
       <UCheckbox v-model="rememberMe" label="Remember me" />
-      <UButton type="submit">Login</UButton>
-      <h1 class="text-red-500" v-if="errorResponse">
-        {{ errorResponse }}
-      </h1>
+      <UButton type="submit" loading-auto trailing>Login</UButton>
+      <h1 class="text-red-500">{{ errorResponse }}</h1>
       <div>
         <span>No account?</span>
         <ULink to="/register">Register</ULink>

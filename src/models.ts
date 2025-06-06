@@ -1,11 +1,3 @@
-export interface ValidationErrorResponse {
-  type: string;
-  title: string;
-  status: number;
-  errors: Record<string, string[]>;
-  traceId: string;
-}
-
 export interface ServerModel {
   id: string;
   name: string;

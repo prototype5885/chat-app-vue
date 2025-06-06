@@ -2,41 +2,41 @@
 import { router } from "@/main";
 import { reactive, ref } from "vue";
 import axios from "axios";
-import type { ValidationErrorResponse } from "@/models.ts";
 
 interface SignUpForm {
   email: string;
   password: string;
+  confirmPassword: string;
 }
 
 const registerForm = reactive<SignUpForm>({
   email: "",
   password: "",
+  confirmPassword: "",
 });
 
-const secondPassword = ref<string>("");
+const emailError = ref<string>("");
+const passwordError = ref<string>("");
 
-const errorResponse = ref<ValidationErrorResponse>();
-const successResponse = ref<string>("");
-
-const passwordError = ref<string>();
+const errorResponseStatus = ref<string>("");
 
 async function submit() {
-  if (registerForm.password !== secondPassword.value) {
-    passwordError.value = "Passwords entered don't match";
-    return;
-  }
+  emailError.value = "";
   passwordError.value = "";
+  errorResponseStatus.value = "";
 
   await axios
-    .post("/Api/Auth/register", registerForm)
+    .post("/api/auth/register", registerForm)
     .then(function (resp) {
-      errorResponse.value = undefined;
-      successResponse.value = resp.statusText;
       router.push("/login");
     })
     .catch((e) => {
-      errorResponse.value = e.response.data as ValidationErrorResponse;
+      if (e.status === 400) {
+        emailError.value = e.response.data["Email"];
+        passwordError.value = e.response.data["Password"];
+      } else {
+        errorResponseStatus.value = e.response.statusText;
+      }
     });
 }
 </script>
@@ -48,45 +48,31 @@ async function submit() {
       @submit.prevent="submit"
       :state="registerForm"
     >
-      <UFormField label="Email" name="email" required>
+      <UFormField label="Email" required :error="emailError">
         <UInput
           v-model="registerForm.email"
           placeholder="Enter your email"
           class="w-64"
-          type="email"
-          required
         />
       </UFormField>
-      <UFormField label="Password" name="password" required>
+      <UFormField label="Password" required :error="passwordError">
         <UInput
           v-model="registerForm.password"
           placeholder="Enter a password"
           class="w-64"
           type="password"
-          required
         />
       </UFormField>
-      <UFormField label="Password again" required>
+      <UFormField label="Password again" required :error="passwordError">
         <UInput
-          v-model="secondPassword"
+          v-model="registerForm.confirmPassword"
           placeholder="Enter password again"
           class="w-64"
           type="password"
-          required
         />
       </UFormField>
-      <UButton type="submit">Sign up</UButton>
-      <h1 class="text-green-500" v-if="successResponse">
-        {{ successResponse }}
-      </h1>
-      <h1 class="text-red-500">{{ passwordError }}</h1>
-      <h1
-        class="text-red-500"
-        v-if="errorResponse"
-        v-for="error in errorResponse.errors"
-      >
-        {{ error[0] }}
-      </h1>
+      <UButton type="submit" loading-auto trailing>Sign up</UButton>
+      <h1 class="text-red-500">{{ errorResponseStatus }}</h1>
       <div>
         <ULink to="/login">Already have an account?</ULink>
       </div>
