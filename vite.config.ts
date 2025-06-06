@@ -21,11 +21,11 @@ export default defineConfig({
         target: "http://localhost:5083",
         changeOrigin: true,
       },
-      "/chat": {
-        target: "http://localhost:5083",
-        changeOrigin: true,
-        ws: true,
-      },
+      // "/ws": {
+      //   target: "http://localhost:5083",
+      //   changeOrigin: true,
+      //   ws: true,
+      // },
     },
   },
 });
