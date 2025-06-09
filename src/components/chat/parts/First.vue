@@ -21,14 +21,14 @@ watch(
   () => route.params.server,
   () => {
     serverKey.value = route.params.server as string;
-  },
+  }
 );
 
 SignalRService.connect();
 
 console.log("Getting servers...");
 axios
-  .get<ServerModel[]>("/Api/Server/All")
+  .get<ServerModel[]>("/api/server/all")
   .then(function (response) {
     serverList.value = response.data;
   })
@@ -51,7 +51,7 @@ function addServer() {
   };
 
   axios
-    .post<ServerModel>("/Api/Server/Post", newServer)
+    .post<ServerModel>("/api/server", newServer)
     .then(function (response) {
       serverList.value.push(response.data);
     })
@@ -87,9 +87,10 @@ onBeforeUnmount(() => {
       <Server
         :server="{
           id: DM,
-          ownerId: '',
+          ownerID: '',
           name: 'DM',
-          pic: '',
+          picture: '',
+          banner: '',
         }"
         :selected="isServerSelected(DM)"
         @select-server="selectDm"
@@ -107,9 +108,10 @@ onBeforeUnmount(() => {
       <Server
         :server="{
           id: ADD_SERVER,
-          ownerId: '',
+          ownerID: '',
           name: 'Add a server',
-          pic: '',
+          picture: '',
+          banner: '',
         }"
         :selected="false"
         pic=""

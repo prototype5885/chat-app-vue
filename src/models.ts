@@ -1,8 +1,9 @@
 export interface ServerModel {
   id: string;
+  ownerID: string;
   name: string;
-  pic: string;
-  ownerId: string;
+  picture: string;
+  banner: string;
 }
 
 export interface ChannelModel {

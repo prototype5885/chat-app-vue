@@ -50,7 +50,7 @@ function select() {
               <button
                 class="flex justify-center items-center w-12 h-12 bg-cover bg-center transition-all"
                 :style="{
-                  backgroundImage: `url(/avatars/${props.server.pic})`,
+                  backgroundImage: `url(/avatars/${props.server.picture})`,
                 }"
                 @click="select"
                 :class="
@@ -67,7 +67,8 @@ function select() {
                 <Plus v-else-if="props.server.id === 'add-server'" />
                 <span
                   v-else-if="
-                    props.server.pic == undefined || props.server.pic == ''
+                    props.server.picture == undefined ||
+                    props.server.picture == ''
                   "
                   >{{ props.server.name[0].toUpperCase() }}</span
                 >
