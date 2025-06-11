@@ -8,7 +8,7 @@ export interface ServerModel {
 
 export interface ChannelModel {
   id: string;
-  serverId: string;
+  serverID: string;
   name: string;
 }
 
@@ -17,15 +17,6 @@ export interface MessageModel {
   userId: string;
   channelId: string;
   msg: string;
-}
-
-export interface AddServerModel {
-  name: string;
-}
-
-export interface AddChannelModel {
-  name: string;
-  serverId: string;
 }
 
 export interface AddMessageModel {
