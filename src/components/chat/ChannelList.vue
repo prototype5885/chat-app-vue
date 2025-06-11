@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { router } from "@/main";
-import type { AddChannelModel, ChannelModel } from "@/models";
+import type { ChannelModel } from "@/models";
 import axios from "axios";
 import { Plus } from "lucide-vue-next";
 import { ref } from "vue";
@@ -11,7 +11,7 @@ const route = useRoute();
 const channels = ref<ChannelModel[]>([]);
 
 axios
-  .get<ChannelModel[]>("/Api/Channel/All/" + route.params.server)
+  .get<ChannelModel[]>(`/api/channel/fetch?serverID=${route.params.server}`)
   .then(function (res) {
     channels.value = res.data;
     const lastChannel = localStorage.getItem(
@@ -28,16 +28,10 @@ axios
   });
 
 function addChannel() {
-  const channel: AddChannelModel = {
-    name: "Channel",
-    serverId: route.params.server as string,
-  };
+  const name = "New Channel" // temporary
 
   axios
-    .post<ChannelModel>("/Api/Channel/Post", channel)
-    .then(function (res) {
-      channels.value.push(res.data);
-    })
+    .post<ChannelModel>(`/api/channel/create?serverID=${route.params.server}&name=${name}`)
     .catch((error) => {
       console.error(error);
     });

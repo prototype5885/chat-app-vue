@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { AddServerModel, ServerModel } from "@/models";
+import type { ServerModel } from "@/models";
 import { router } from "@/main";
 import axios from "axios";
 import { onBeforeUnmount, ref, watch } from "vue";
@@ -28,7 +28,7 @@ SignalRService.connect();
 
 console.log("Getting servers...");
 axios
-  .get<ServerModel[]>("/api/server/all")
+  .get<ServerModel[]>("/api/server/fetch")
   .then(function (response) {
     serverList.value = response.data;
   })
@@ -46,12 +46,8 @@ function selectServer(serverId: string) {
 }
 
 function addServer() {
-  const newServer: AddServerModel = {
-    name: "new server",
-  };
-
   axios
-    .post<ServerModel>("/api/server", newServer)
+    .post<ServerModel>(`/api/server/create?name=${'Custom server'}`)
     .then(function (response) {
       serverList.value.push(response.data);
     })
