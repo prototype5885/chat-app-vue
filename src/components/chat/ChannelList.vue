@@ -81,6 +81,7 @@ function isChannelSelected(channelId: string): boolean {
         <Channel
           v-for="channel in channels"
           :id="channel.id"
+          :name="channel.name"
           :selected="isChannelSelected(channel.id)"
           @channel-selected="selectChannel"
         />

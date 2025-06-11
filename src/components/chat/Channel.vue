@@ -4,6 +4,7 @@ import { defineProps } from "vue";
 
 const props = defineProps<{
   id: string;
+  name: string;
   selected: boolean;
 }>();
 
@@ -18,7 +19,7 @@ defineEmits(["channel-selected"]);
       @click="$emit('channel-selected', props.id)"
     >
       <Hash class="mx-1" :stroke-width="2" :size="20" />
-      <span class="ml-1">{{ props.id }}</span>
+      <span class="ml-1">{{ props.name }}</span>
     </button>
   </li>
 </template>
