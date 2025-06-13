@@ -14,13 +14,16 @@ axios
   .get<ChannelModel[]>(`/api/channel/fetch?serverID=${route.params.server}`)
   .then(function (res) {
     channels.value = res.data;
-    const lastChannel = localStorage.getItem(
-      ("last-channel-on-" + route.params.server) as string,
-    );
-    if (lastChannel) {
-      selectChannel(lastChannel);
-    } else {
-      selectChannel(channels.value[0].id);
+
+    if (channels.value.length !== 0) {
+      const lastChannel = localStorage.getItem(
+        ("last-channel-on-" + route.params.server) as string
+      );
+      if (lastChannel) {
+        selectChannel(lastChannel);
+      } else {
+        selectChannel(channels.value[0].id);
+      }
     }
   })
   .catch((error) => {
@@ -28,10 +31,12 @@ axios
   });
 
 function addChannel() {
-  const name = "New Channel" // temporary
+  const name = "New Channel"; // temporary
 
   axios
-    .post<ChannelModel>(`/api/channel/create?serverID=${route.params.server}&name=${name}`)
+    .post<ChannelModel>(
+      `/api/channel/create?serverID=${route.params.server}&name=${name}`
+    )
     .catch((error) => {
       console.error(error);
     });
@@ -41,7 +46,7 @@ function selectChannel(channelId: string) {
   if (isChannelSelected(channelId)) return;
   localStorage.setItem(
     ("last-channel-on-" + route.params.server) as string,
-    channelId,
+    channelId
   );
   router.push(`/chat/${route.params.server}/${channelId}`);
 }
