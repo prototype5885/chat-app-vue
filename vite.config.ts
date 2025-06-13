@@ -21,6 +21,10 @@ export default defineConfig({
         target: "http://localhost:5083",
         changeOrigin: true,
       },
+      "/cdn": {
+        target: "http://localhost:5083",
+        changeOrigin: true,
+      },
       // "/ws": {
       //   target: "http://localhost:5083",
       //   changeOrigin: true,

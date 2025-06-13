@@ -32,6 +32,9 @@ function select() {
             <UPopover mode="hover" arrow :content="{ side: 'right' }">
               <button
                 class="flex justify-center items-center w-12 h-12 bg-cover bg-center transition-all"
+                :style="{
+                  backgroundImage: `url(/cdn/avatars/${props.picture})`,
+                }"
                 @click="select"
                 :class="
                   selected
