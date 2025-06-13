@@ -5,6 +5,7 @@ import axios from "axios";
 import { onBeforeUnmount, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { SignalRService } from "@/services/signalRService";
+import { Mail } from "lucide-vue-next";
 
 const route = useRoute();
 
@@ -45,17 +46,6 @@ function selectServer(serverId: string) {
   setCurrentServer(serverId);
 }
 
-function addServer() {
-  axios
-    .post<ServerModel>(`/api/server/create?name=${'Custom server'}`)
-    .then(function (response) {
-      serverList.value.push(response.data);
-    })
-    .catch((error) => {
-      console.error("Error adding server", error);
-    });
-}
-
 function isServerSelected(id: string): boolean {
   if (id === route.params.server) {
     return true;
@@ -80,38 +70,62 @@ onBeforeUnmount(() => {
     <ul
       class="min-w-18 max-w-18 bg-black/45 overflow-y-auto scrollbar-hidden flex flex-col items-center py-2"
     >
-      <Server
-        :server="{
-          id: DM,
-          ownerID: '',
-          name: 'DM',
-          picture: '',
-          banner: '',
-        }"
+      <!-- dm button -->
+      <ServerBase
+        name="DM"
         :selected="isServerSelected(DM)"
-        @select-server="selectDm"
-      />
+        @clicked="selectDm"
+        :ctx-items="[]"
+      >
+        <Mail :size="32" :strokeWidth="1" />
+      </ServerBase>
+
       <USeparator class="w-8 py-2" />
-      <Server
+
+      <!-- server list -->
+      <ServerBase
         v-for="server in serverList"
         :key="server.id"
-        :server="server"
+        :id="server.id"
+        :name="server.name"
+        :picture="server.picture"
+        :ctx-items="[
+          [
+            {
+              label: 'Rename server',
+            },
+          ],
+          [
+            {
+              label: 'Show Sidebar',
+              kbds: ['meta', 's'],
+            },
+          ],
+          [
+            {
+              label: 'Delete server',
+              color: 'error' as const,
+            },
+          ],
+        ]"
         :selected="isServerSelected(server.id)"
-        @select-server="selectServer(server.id)"
-      />
+        @clicked="selectServer(server.id)"
+      >
+        <span v-if="server.picture == undefined || server.picture == ''">{{
+          server.name[0].toUpperCase()
+        }}</span>
+      </ServerBase>
+
       <USeparator v-if="serverList.length !== 0" class="w-8 py-2" />
 
-      <Server
-        :server="{
-          id: ADD_SERVER,
-          ownerID: '',
-          name: 'Add a server',
-          picture: '',
-          banner: '',
-        }"
-        :selected="false"
-        pic=""
-        @select-server="addServer"
+      <!-- add server button -->
+      <CreateServer
+        v-model="serverList"
+        @created-server="
+          (serverID: string) => {
+            selectServer(serverID);
+          }
+        "
       />
     </ul>
 
