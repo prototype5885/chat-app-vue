@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { router } from "@/main";
 import type { ChannelModel } from "@/models";
+import { WebSocketService } from "@/services/websocketService";
 import axios from "axios";
 import { Plus } from "lucide-vue-next";
-import { ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
@@ -57,6 +58,19 @@ function isChannelSelected(channelId: string): boolean {
   }
   return false;
 }
+
+onMounted(() => {
+  WebSocketService.emitter.on("ChannelCreated", channelAdded);
+});
+
+function channelAdded(channel: ChannelModel) {
+  console.log(channel);
+  channels.value.push(channel);
+}
+
+onUnmounted(() => {
+  WebSocketService.emitter.off("ChannelCreated", channelAdded);
+});
 </script>
 
 <template>

@@ -4,8 +4,8 @@ import { router } from "@/main";
 import axios from "axios";
 import { onBeforeUnmount, ref, watch } from "vue";
 import { useRoute } from "vue-router";
-import { SignalRService } from "@/services/signalRService";
 import { Mail } from "lucide-vue-next";
+import { WebSocketService } from "@/services/websocketService";
 
 const route = useRoute();
 
@@ -25,7 +25,7 @@ watch(
   }
 );
 
-SignalRService.connect();
+WebSocketService.connect();
 
 console.log("Getting servers...");
 axios
@@ -61,7 +61,7 @@ function setCurrentServer(serverId: string) {
 }
 
 onBeforeUnmount(() => {
-  SignalRService.disconnect();
+  WebSocketService.Disconnect();
 });
 </script>
 
