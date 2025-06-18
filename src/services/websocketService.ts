@@ -1,4 +1,4 @@
-import type { ChannelModel, ServerModel } from "@/models";
+import type { ChannelModel, MessageModel, ServerModel } from "@/models";
 import mitt from "mitt";
 
 const types = {
@@ -15,12 +15,16 @@ const types = {
 };
 
 type EmitterEvents = {
-  ServerDeleted: ServerModel;
+  ServerDeleted: string;
   ServerModified: ServerModel;
 
   ChannelCreated: ChannelModel;
-  ChannelDeleted: ChannelModel;
+  ChannelDeleted: string;
   ChannelModified: ChannelModel;
+
+  MessageCreated: MessageModel;
+  MessageDeleted: string;
+  MessageModified: MessageModel;
 };
 
 export class WebSocketService {
@@ -58,8 +62,31 @@ export class WebSocketService {
       const json = JSON.parse(jsonString);
 
       switch (type) {
+        case types.ServerDeleted:
+          WebSocketService.emitter.emit("ServerDeleted", json);
+          break;
+        case types.ServerModified:
+          WebSocketService.emitter.emit("ServerModified", json);
+          break;
+
         case types.ChannelCreated:
           WebSocketService.emitter.emit("ChannelCreated", json);
+          break;
+        case types.ChannelDeleted:
+          WebSocketService.emitter.emit("ChannelDeleted", json);
+          break;
+        case types.ChannelModified:
+          WebSocketService.emitter.emit("ChannelModified", json);
+          break;
+
+        case types.MessageCreated:
+          WebSocketService.emitter.emit("MessageCreated", json);
+          break;
+        case types.MessageDeleted:
+          WebSocketService.emitter.emit("MessageDeleted", json);
+          break;
+        case types.MessageModified:
+          WebSocketService.emitter.emit("MessageModified", json);
           break;
       }
     };

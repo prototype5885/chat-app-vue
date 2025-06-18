@@ -27,12 +27,12 @@ watch(chatInput, () => {
 function sendMsg() {
   if (chatInput.value) {
     const message: AddMessageModel = {
-      msg: chatInput.value,
-      channelId: channelId,
+      message: chatInput.value,
+      channelID: channelId,
     };
 
     axios
-      .post("/Api/Message/Post", message)
+      .post("/api/message/create", message)
       .then(() => {
         chatInput.value = "";
       })

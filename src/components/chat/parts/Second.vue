@@ -20,6 +20,6 @@ watch(
       <ChannelList class="bg-black/20" />
       <UserPanel />
     </div>
-    <!-- <RouterView :key="channelKey" /> -->
+    <RouterView :key="channelKey" />
   </div>
 </template>

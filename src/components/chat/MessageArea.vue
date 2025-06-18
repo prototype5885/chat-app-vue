@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { MessageModel } from "@/models.ts";
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import axios from "axios";
-import { SignalRService } from "@/services/signalRService";
 import { useRoute } from "vue-router";
+import { WebSocketService } from "@/services/websocketService";
 
 const route = useRoute();
 
@@ -15,7 +15,7 @@ const loading = ref<boolean>(true);
 const endDiv = ref<HTMLDivElement | null | undefined>();
 
 axios
-  .get<MessageModel[]>("/Api/Message/All/" + route.params.channel)
+  .get<MessageModel[]>(`/api/message/fetch?channelID=${route.params.channel}`)
   .then(function (response) {
     messageList.value = response.data;
     loading.value = false;
@@ -24,22 +24,26 @@ axios
     console.error(error);
   });
 
-console.log(`SignalR listening on channel ${route.params.channel}`);
-SignalRService.conn.on(websocketChannel, (data: MessageModel) => {
-  messageList.value.push(data);
-});
-
 watch(
   () => messageList,
   async () => {
     await nextTick();
     endDiv?.value?.scrollIntoView({ behavior: "instant" });
   },
-  { deep: true },
+  { deep: true }
 );
 
-onBeforeUnmount(() => {
-  SignalRService.conn.off(websocketChannel);
+onMounted(() => {
+  WebSocketService.emitter.on("MessageCreated", messageAdded);
+});
+
+function messageAdded(message: MessageModel) {
+  console.log("Message created:", message);
+  messageList.value.push(message);
+}
+
+onUnmounted(() => {
+  WebSocketService.emitter.off("MessageCreated", messageAdded);
 });
 </script>
 
@@ -52,10 +56,10 @@ onBeforeUnmount(() => {
         :key="index"
         class="py-2"
         :message-id="msg.id"
-        :user-id="msg.userId"
+        :user-id="msg.userID"
         name="name"
         pic=""
-        :msg="msg.msg"
+        :msg="msg.message"
       ></Message>
       <li ref="endDiv"></li>
     </ul>

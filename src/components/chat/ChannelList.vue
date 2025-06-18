@@ -64,7 +64,6 @@ onMounted(() => {
 });
 
 function channelAdded(channel: ChannelModel) {
-  console.log(channel);
   channels.value.push(channel);
 }
 

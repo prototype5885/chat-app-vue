@@ -14,12 +14,14 @@ export interface ChannelModel {
 
 export interface MessageModel {
   id: string;
-  userId: string;
-  channelId: string;
-  msg: string;
+  channelID: string;
+  userID: string;
+  message: string;
+  attachments: string[];
+  edited: boolean;
 }
 
 export interface AddMessageModel {
-  msg: string;
-  channelId: string;
+  message: string;
+  channelID: string;
 }
