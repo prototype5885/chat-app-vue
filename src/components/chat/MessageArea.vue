@@ -7,8 +7,6 @@ import { WebSocketService } from "@/services/websocketService";
 
 const route = useRoute();
 
-const websocketChannel = `message/${route.params.channel}`;
-
 const messageList = ref<MessageModel[]>([]);
 
 const loading = ref<boolean>(true);
