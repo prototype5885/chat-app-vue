@@ -1,7 +1,6 @@
 function extractDateFromId(id: bigint): Date {
-  const epoch = BigInt(new Date("2015-01-01T00:00:00Z").getTime());
   const timestamp = id >> 22n;
-  const time = epoch + timestamp;
+  const time = timestamp;
   return new Date(Number(time));
 }
 
