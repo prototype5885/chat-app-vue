@@ -31,6 +31,7 @@ export const router = createRouter({
     {
       path: "/chat",
       component: First,
+      redirect: "/chat/100",
       children: [
         {
           path: ":server",
