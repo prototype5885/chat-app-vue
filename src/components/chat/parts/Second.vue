@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const props = defineProps({
-  server: String,
+  channel: String,
 });
 </script>
 
@@ -10,6 +10,6 @@ const props = defineProps({
       <ChannelList class="bg-black/20" />
       <UserPanel />
     </div>
-    <RouterView :key="props.server" />
+    <RouterView :key="props.channel" />
   </div>
 </template>

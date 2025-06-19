@@ -8,6 +8,8 @@ import { MsgPackEncode } from "@/services/messagepack";
 const chatInput = ref<string>();
 const typing = ref<boolean>(false);
 
+const route = useRoute();
+
 const handleKeyDown = (e: KeyboardEvent) => {
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
@@ -27,7 +29,7 @@ function sendMsg() {
   if (chatInput.value) {
     const message: AddMessageModel = {
       message: chatInput.value,
-      channelID: BigInt(useRoute().params.channel as string),
+      channelID: BigInt(String(route.params.channel)),
     };
 
     axios
