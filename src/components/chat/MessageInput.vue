@@ -5,8 +5,6 @@ import type { AddMessageModel } from "@/models";
 import { useRoute } from "vue-router";
 import { MsgPackEncode } from "@/services/messagepack";
 
-const channelId = useRoute().params.channel as string;
-
 const chatInput = ref<string>();
 const typing = ref<boolean>(false);
 
@@ -29,7 +27,7 @@ function sendMsg() {
   if (chatInput.value) {
     const message: AddMessageModel = {
       message: chatInput.value,
-      channelID: BigInt(channelId),
+      channelID: BigInt(useRoute().params.channel as string),
     };
 
     axios
