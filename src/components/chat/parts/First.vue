@@ -47,14 +47,14 @@ function selectServer(serverID: bigint) {
 }
 
 function isServerSelected(serverID: bigint): boolean {
-  if (serverID === BigInt(route.params.server as string)) {
+  if (serverID.toString() === (route.params.server as string)) {
     return true;
   }
   return false;
 }
 
 function setCurrentServer(serverID: bigint) {
-  if (serverID === BigInt(route.params.server as string)) {
+  if (serverID.toString() === (route.params.server as string)) {
     return;
   }
   router.push(`/chat/${serverID}`);

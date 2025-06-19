@@ -54,7 +54,7 @@ function selectChannel(channelID: bigint) {
 }
 
 function isChannelSelected(channelID: bigint): boolean {
-  if (channelID === BigInt(route.params.channel as string)) {
+  if (channelID.toString() === (route.params.channel as string)) {
     return true;
   }
   return false;
