@@ -44,17 +44,17 @@ function addChannel() {
     });
 }
 
-function selectChannel(channelId: bigint) {
-  if (isChannelSelected(channelId)) return;
+function selectChannel(channelID: bigint) {
+  if (isChannelSelected(channelID)) return;
   localStorage.setItem(
     ("last-channel-on-" + route.params.server) as string,
-    channelId.toString()
+    channelID.toString()
   );
-  router.push(`/chat/${route.params.server}/${channelId}`);
+  router.push(`/chat/${route.params.server}/${channelID}`);
 }
 
-function isChannelSelected(channelId: bigint): boolean {
-  if (channelId.toString() === (route.params.channel as string)) {
+function isChannelSelected(channelID: bigint): boolean {
+  if (channelID === BigInt(route.params.channel as string)) {
     return true;
   }
   return false;

@@ -42,22 +42,22 @@ function selectDm() {
   console.log("Selected dm");
 }
 
-function selectServer(serverId: bigint) {
-  setCurrentServer(serverId);
+function selectServer(serverID: bigint) {
+  setCurrentServer(serverID);
 }
 
-function isServerSelected(id: bigint): boolean {
-  if (id.toString() === (route.params.server as string)) {
+function isServerSelected(serverID: bigint): boolean {
+  if (serverID === BigInt(route.params.server as string)) {
     return true;
   }
   return false;
 }
 
-function setCurrentServer(serverId: bigint) {
-  if (serverId.toString() === (route.params.server as string)) {
+function setCurrentServer(serverID: bigint) {
+  if (serverID === BigInt(route.params.server as string)) {
     return;
   }
-  router.push(`/chat/${serverId}`);
+  router.push(`/chat/${serverID}`);
 }
 
 onBeforeUnmount(() => {
