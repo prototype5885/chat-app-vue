@@ -14,7 +14,7 @@ const channels = ref<ChannelModel[]>([]);
 
 axios
   .get<Uint8Array>(
-    `/api/channel/fetch?serverID=${encodeURIComponent(route.params.server as string)}`,
+    `/api/channel/fetch?serverID=${encodeURIComponent(String(route.params.server))}`,
     {
       responseType: "arraybuffer",
     }
@@ -24,7 +24,7 @@ axios
 
     if (channels.value.length !== 0) {
       const lastChannel = localStorage.getItem(
-        ("last-channel-on-" + route.params.server) as string
+        "last-channel-on-" + String(route.params.server)
       );
       if (lastChannel) {
         selectChannel(BigInt(lastChannel));
@@ -38,7 +38,7 @@ axios
   });
 
 function addChannel() {
-  const currentServer = encodeURIComponent(route.params.server as string);
+  const currentServer = encodeURIComponent(String(route.params.server));
   const channelName = encodeURIComponent("New Channel"); // temporary
 
   axios
@@ -51,14 +51,14 @@ function addChannel() {
 function selectChannel(channelID: bigint) {
   if (isChannelSelected(channelID)) return;
   localStorage.setItem(
-    ("last-channel-on-" + route.params.server) as string,
+    "last-channel-on-" + String(route.params.server),
     channelID.toString()
   );
   router.push(`/chat/${route.params.server}/${channelID}`);
 }
 
 function isChannelSelected(channelID: bigint): boolean {
-  if (channelID.toString() === (route.params.channel as string)) {
+  if (channelID.toString() === String(route.params.channel)) {
     return true;
   }
   return false;

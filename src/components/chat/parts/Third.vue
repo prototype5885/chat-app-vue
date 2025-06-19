@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { useRoute } from "vue-router";
+const props = defineProps({
+  channel: String,
+});
 </script>
 
 <template>
   <div class="flex flex-row grow h-screen">
     <div class="flex flex-col grow">
-      <Top>{{ useRoute().params.channel as string }}</Top>
+      <Top>{{ channel }}</Top>
       <MessageArea />
     </div>
 

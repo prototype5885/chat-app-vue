@@ -1,17 +1,7 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
-import { useRoute } from "vue-router";
-
-const route = useRoute();
-
-// these are so messages will re render when channel changes
-const channelKey = ref<string>(route.params.channel as string);
-watch(
-  () => route.params.channel,
-  () => {
-    channelKey.value = route.params.channel as string;
-  }
-);
+const props = defineProps({
+  server: String,
+});
 </script>
 
 <template>
@@ -20,6 +10,6 @@ watch(
       <ChannelList class="bg-black/20" />
       <UserPanel />
     </div>
-    <RouterView :key="channelKey" />
+    <RouterView :key="props.server" />
   </div>
 </template>

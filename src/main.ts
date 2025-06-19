@@ -36,12 +36,12 @@ export const router = createRouter({
         {
           path: ":server",
           component: Second,
-          // props: true,
+          props: true,
           children: [
             {
               path: ":channel",
               component: Third,
-              // props: true,
+              props: true,
             },
           ],
         },

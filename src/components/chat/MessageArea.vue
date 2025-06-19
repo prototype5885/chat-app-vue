@@ -15,7 +15,7 @@ const endDiv = ref<HTMLDivElement | null | undefined>();
 
 axios
   .get<Uint8Array>(
-    `/api/message/fetch?channelID=${encodeURIComponent(route.params.channel as string)}`,
+    `/api/message/fetch?channelID=${encodeURIComponent(String(route.params.channel))}`,
     {
       responseType: "arraybuffer",
     }

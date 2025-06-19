@@ -2,7 +2,7 @@
 import type { ServerModel } from "@/models";
 import { router } from "@/main";
 import axios from "axios";
-import { onBeforeUnmount, ref, watch } from "vue";
+import { onBeforeUnmount, ref } from "vue";
 import { useRoute } from "vue-router";
 import { Mail } from "lucide-vue-next";
 import { WebSocketService } from "@/services/websocketService";
@@ -15,15 +15,6 @@ const DM: bigint = 100n;
 const theme = "diskord";
 
 const serverList = ref<ServerModel[]>([]);
-
-// these are so channel list will re render when server changes
-const serverKey = ref<string>(route.params.server as string);
-watch(
-  () => route.params.server,
-  () => {
-    serverKey.value = route.params.server as string;
-  }
-);
 
 WebSocketService.connect();
 
@@ -47,14 +38,14 @@ function selectServer(serverID: bigint) {
 }
 
 function isServerSelected(serverID: bigint): boolean {
-  if (serverID.toString() === (route.params.server as string)) {
+  if (serverID.toString() === String(route.params.server)) {
     return true;
   }
   return false;
 }
 
 function setCurrentServer(serverID: bigint) {
-  if (serverID.toString() === (route.params.server as string)) {
+  if (serverID.toString() === String(route.params.server)) {
     return;
   }
   router.push(`/chat/${serverID}`);
@@ -130,7 +121,7 @@ onBeforeUnmount(() => {
     </ul>
 
     <div class="flex grow">
-      <RouterView :key="serverKey" />
+      <RouterView :key="String(route.params.server)" />
     </div>
   </div>
 </template>
