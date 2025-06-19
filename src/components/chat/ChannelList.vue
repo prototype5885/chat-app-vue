@@ -13,9 +13,12 @@ const route = useRoute();
 const channels = ref<ChannelModel[]>([]);
 
 axios
-  .get<Uint8Array>(`/api/channel/fetch?serverID=${route.params.server}`, {
-    responseType: "arraybuffer",
-  })
+  .get<Uint8Array>(
+    `/api/channel/fetch?serverID=${encodeURIComponent(route.params.server as string)}`,
+    {
+      responseType: "arraybuffer",
+    }
+  )
   .then(function (res) {
     channels.value = MsgPackDecode(res.data) as ChannelModel[];
 
@@ -35,10 +38,11 @@ axios
   });
 
 function addChannel() {
-  const name = "New Channel"; // temporary
+  const currentServer = encodeURIComponent(route.params.server as string);
+  const channelName = encodeURIComponent("New Channel"); // temporary
 
   axios
-    .post(`/api/channel/create?serverID=${route.params.server}&name=${name}`)
+    .post(`/api/channel/create?serverID=${currentServer}&name=${channelName}`)
     .catch((error) => {
       console.error(error);
     });

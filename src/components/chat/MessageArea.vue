@@ -14,9 +14,12 @@ const loading = ref<boolean>(true);
 const endDiv = ref<HTMLDivElement | null | undefined>();
 
 axios
-  .get<Uint8Array>(`/api/message/fetch?channelID=${route.params.channel}`, {
-    responseType: "arraybuffer",
-  })
+  .get<Uint8Array>(
+    `/api/message/fetch?channelID=${encodeURIComponent(route.params.channel as string)}`,
+    {
+      responseType: "arraybuffer",
+    }
+  )
   .then(function (response) {
     messageList.value = MsgPackDecode(response.data) as MessageModel[];
     loading.value = false;
