@@ -26,6 +26,10 @@ axios
   })
   .catch((error) => {
     console.error(error);
+    if (error.response.status === 401) {
+      router.push("/");
+      return;
+    }
   });
 
 function selectDm() {
