@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ServerModel } from "@/models";
+import { MsgPackDecode } from "@/services/messagepack";
 import axios from "axios";
 import { Plus } from "lucide-vue-next";
 import { onUpdated, reactive, ref } from "vue";
@@ -33,14 +34,16 @@ function submit() {
   }
 
   axios
-    .post<ServerModel>(
+    .post<Uint8Array>(
       `/api/server/create?name=${encodeURIComponent(createServer.name)}`,
-      formData
+      formData,
+      { responseType: "arraybuffer" }
     )
     .then(function (response) {
-      serverList.value.push(response.data);
+      const server = MsgPackDecode(response.data) as ServerModel;
+      serverList.value.push(server);
       modalOpen.value = false;
-      emit("created-server", response.data.id);
+      emit("created-server", server.id);
     })
     .catch((error) => {
       console.error("Error adding server", error.response.statusText);

@@ -1,4 +1,5 @@
 import type { ChannelModel, MessageModel, ServerModel } from "@/models";
+import { decode } from "@msgpack/msgpack";
 import mitt from "mitt";
 
 const types = {
@@ -57,36 +58,36 @@ export class WebSocketService {
       }
 
       const type = receivedBytes[0];
-      const jsonBytes = receivedBytes.slice(1, receivedBytes.length);
-      const jsonString = new TextDecoder().decode(jsonBytes);
-      const json = JSON.parse(jsonString);
+      const msg = decode(receivedBytes.slice(1, receivedBytes.length), {
+        useBigInt64: true,
+      }) as any;
 
       switch (type) {
         case types.ServerDeleted:
-          WebSocketService.emitter.emit("ServerDeleted", json);
+          WebSocketService.emitter.emit("ServerDeleted", msg);
           break;
         case types.ServerModified:
-          WebSocketService.emitter.emit("ServerModified", json);
+          WebSocketService.emitter.emit("ServerModified", msg);
           break;
 
         case types.ChannelCreated:
-          WebSocketService.emitter.emit("ChannelCreated", json);
+          WebSocketService.emitter.emit("ChannelCreated", msg);
           break;
         case types.ChannelDeleted:
-          WebSocketService.emitter.emit("ChannelDeleted", json);
+          WebSocketService.emitter.emit("ChannelDeleted", msg);
           break;
         case types.ChannelModified:
-          WebSocketService.emitter.emit("ChannelModified", json);
+          WebSocketService.emitter.emit("ChannelModified", msg);
           break;
 
         case types.MessageCreated:
-          WebSocketService.emitter.emit("MessageCreated", json);
+          WebSocketService.emitter.emit("MessageCreated", msg);
           break;
         case types.MessageDeleted:
-          WebSocketService.emitter.emit("MessageDeleted", json);
+          WebSocketService.emitter.emit("MessageDeleted", msg);
           break;
         case types.MessageModified:
-          WebSocketService.emitter.emit("MessageModified", json);
+          WebSocketService.emitter.emit("MessageModified", msg);
           break;
       }
     };

@@ -2,8 +2,8 @@
 import { extractDate } from "@/services/snowflakeService";
 
 const props = defineProps<{
-  messageId: string;
-  userId: string;
+  messageId: bigint;
+  userId: bigint;
   name: string;
   pic: string;
   msg: string;

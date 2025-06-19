@@ -6,11 +6,11 @@ import { onBeforeUnmount, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { Mail } from "lucide-vue-next";
 import { WebSocketService } from "@/services/websocketService";
+import { MsgPackDecode } from "@/services/messagepack";
 
 const route = useRoute();
 
-const DM = "dm";
-const ADD_SERVER = "add-server";
+const DM: bigint = 100n;
 
 const theme = "diskord";
 
@@ -29,9 +29,9 @@ WebSocketService.connect();
 
 console.log("Getting servers...");
 axios
-  .get<ServerModel[]>("/api/server/fetch")
+  .get<Uint8Array>("/api/server/fetch", { responseType: "arraybuffer" })
   .then(function (response) {
-    serverList.value = response.data;
+    serverList.value = MsgPackDecode(response.data) as ServerModel[];
   })
   .catch((error) => {
     console.error(error);
@@ -42,19 +42,19 @@ function selectDm() {
   console.log("Selected dm");
 }
 
-function selectServer(serverId: string) {
+function selectServer(serverId: bigint) {
   setCurrentServer(serverId);
 }
 
-function isServerSelected(id: string): boolean {
-  if (id === route.params.server) {
+function isServerSelected(id: bigint): boolean {
+  if (id.toString() === (route.params.server as string)) {
     return true;
   }
   return false;
 }
 
-function setCurrentServer(serverId: string) {
-  if (serverId === route.params.server) {
+function setCurrentServer(serverId: bigint) {
+  if (serverId.toString() === (route.params.server as string)) {
     return;
   }
   router.push(`/chat/${serverId}`);
@@ -85,7 +85,7 @@ onBeforeUnmount(() => {
       <!-- server list -->
       <ServerBase
         v-for="server in serverList"
-        :key="server.id"
+        :key="server.id.toString()"
         :id="server.id"
         :name="server.name"
         :picture="server.picture"
@@ -122,7 +122,7 @@ onBeforeUnmount(() => {
       <CreateServer
         v-model="serverList"
         @created-server="
-          (serverID: string) => {
+          (serverID: bigint) => {
             selectServer(serverID);
           }
         "

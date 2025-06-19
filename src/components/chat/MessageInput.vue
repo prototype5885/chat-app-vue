@@ -3,6 +3,7 @@ import { ref, watch } from "vue";
 import axios from "axios";
 import type { AddMessageModel } from "@/models";
 import { useRoute } from "vue-router";
+import { MsgPackEncode } from "@/services/messagepack";
 
 const channelId = useRoute().params.channel as string;
 
@@ -28,11 +29,11 @@ function sendMsg() {
   if (chatInput.value) {
     const message: AddMessageModel = {
       message: chatInput.value,
-      channelID: channelId,
+      channelID: BigInt(channelId),
     };
 
     axios
-      .post("/api/message/create", message)
+      .post("/api/message/create", MsgPackEncode(message))
       .then(() => {
         chatInput.value = "";
       })

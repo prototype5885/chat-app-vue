@@ -4,6 +4,7 @@ import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import axios from "axios";
 import { useRoute } from "vue-router";
 import { WebSocketService } from "@/services/websocketService";
+import { MsgPackDecode } from "@/services/messagepack";
 
 const route = useRoute();
 
@@ -13,9 +14,11 @@ const loading = ref<boolean>(true);
 const endDiv = ref<HTMLDivElement | null | undefined>();
 
 axios
-  .get<MessageModel[]>(`/api/message/fetch?channelID=${route.params.channel}`)
+  .get<Uint8Array>(`/api/message/fetch?channelID=${route.params.channel}`, {
+    responseType: "arraybuffer",
+  })
   .then(function (response) {
-    messageList.value = response.data;
+    messageList.value = MsgPackDecode(response.data) as MessageModel[];
     loading.value = false;
   })
   .catch((error) => {
@@ -36,7 +39,6 @@ onMounted(() => {
 });
 
 function messageAdded(message: MessageModel) {
-  console.log("Message created:", message);
   messageList.value.push(message);
 }
 

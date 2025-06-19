@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { router } from "@/main";
 import type { ChannelModel } from "@/models";
+import { MsgPackDecode } from "@/services/messagepack";
 import { WebSocketService } from "@/services/websocketService";
 import axios from "axios";
 import { Plus } from "lucide-vue-next";
@@ -12,16 +13,18 @@ const route = useRoute();
 const channels = ref<ChannelModel[]>([]);
 
 axios
-  .get<ChannelModel[]>(`/api/channel/fetch?serverID=${route.params.server}`)
+  .get<Uint8Array>(`/api/channel/fetch?serverID=${route.params.server}`, {
+    responseType: "arraybuffer",
+  })
   .then(function (res) {
-    channels.value = res.data;
+    channels.value = MsgPackDecode(res.data) as ChannelModel[];
 
     if (channels.value.length !== 0) {
       const lastChannel = localStorage.getItem(
         ("last-channel-on-" + route.params.server) as string
       );
       if (lastChannel) {
-        selectChannel(lastChannel);
+        selectChannel(BigInt(lastChannel));
       } else {
         selectChannel(channels.value[0].id);
       }
@@ -35,25 +38,23 @@ function addChannel() {
   const name = "New Channel"; // temporary
 
   axios
-    .post<ChannelModel>(
-      `/api/channel/create?serverID=${route.params.server}&name=${name}`
-    )
+    .post(`/api/channel/create?serverID=${route.params.server}&name=${name}`)
     .catch((error) => {
       console.error(error);
     });
 }
 
-function selectChannel(channelId: string) {
+function selectChannel(channelId: bigint) {
   if (isChannelSelected(channelId)) return;
   localStorage.setItem(
     ("last-channel-on-" + route.params.server) as string,
-    channelId
+    channelId.toString()
   );
   router.push(`/chat/${route.params.server}/${channelId}`);
 }
 
-function isChannelSelected(channelId: string): boolean {
-  if (channelId === route.params.channel) {
+function isChannelSelected(channelId: bigint): boolean {
+  if (channelId.toString() === (route.params.channel as string)) {
     return true;
   }
   return false;
