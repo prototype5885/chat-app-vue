@@ -10,6 +10,7 @@ import Login from "./pages/Login.vue";
 import First from "./components/chat/parts/First.vue";
 import Second from "./components/chat/parts/Second.vue";
 import Third from "./components/chat/parts/Third.vue";
+import Test from "./pages/Test.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -21,6 +22,7 @@ export const router = createRouter({
       children: [
         { path: "/home", component: Home },
         { path: "/about", component: About },
+        { path: "/test", component: Test },
         { path: "/register", component: SignUp },
         { path: "/login", component: Login },
       ],

@@ -32,6 +32,10 @@ const items = ref<NavigationMenuItem[]>([
     label: "About",
     to: "/about",
   },
+  {
+    label: "Test",
+    to: "/test",
+  },
 ]);
 </script>
 
