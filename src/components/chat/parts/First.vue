@@ -16,10 +16,22 @@ const theme = "diskord";
 
 const serverList = ref<ServerModel[]>([]);
 
-WebSocketService.connect();
+console.debug("Getting session ID cookie...");
+await axios.get("/api/auth/newSession").catch((error) => {
+  console.error(error);
+  router.push("/");
+  return;
+});
 
-console.log("Getting servers...");
-axios
+console.debug("Connecting to websocket...");
+await WebSocketService.connect().catch((error) => {
+  console.error(error);
+  router.push("/");
+  return;
+});
+
+console.debug("Getting list of servers...");
+await axios
   .get<Uint8Array>("/api/server/fetch", { responseType: "arraybuffer" })
   .then(function (response) {
     serverList.value = MsgPackDecode(response.data) as ServerModel[];
