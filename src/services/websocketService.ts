@@ -52,8 +52,6 @@ export class WebSocketService {
       this.socket.onmessage = async (event) => {
         let receivedBytes = new Uint8Array(event.data);
 
-        console.debug("Websocket message length:", receivedBytes.length);
-
         if (receivedBytes.length < 2) {
           console.error("Received message is too short");
           return;
