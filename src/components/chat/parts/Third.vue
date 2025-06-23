@@ -8,7 +8,10 @@ const props = defineProps({
   <div class="flex flex-row grow h-screen">
     <div class="flex flex-col grow">
       <Top>{{ channel }}</Top>
-      <MessageArea />
+      <Suspense>
+        <MessageArea />
+        <template #fallback>loading</template>
+      </Suspense>
     </div>
 
     <div class="min-w-64 w-64 flex flex-col">

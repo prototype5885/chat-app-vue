@@ -13,7 +13,8 @@ const messageList = ref<MessageModel[]>([]);
 const loading = ref<boolean>(true);
 const endDiv = ref<HTMLDivElement | null | undefined>();
 
-axios
+console.debug(`Getting message list for channel ID ${route.params.channel}`);
+await axios
   .get<Uint8Array>(
     `/api/message/fetch?channelID=${encodeURIComponent(String(route.params.channel))}`,
     {

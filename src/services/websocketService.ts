@@ -33,79 +33,83 @@ export class WebSocketService {
 
   public static emitter = mitt<EmitterEvents>();
 
-  public static connect(): void {
-    if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-      console.warn("WebSocket is already connected.");
-      return;
-    }
-
-    this.socket = new WebSocket(`ws://${window.location.host}/ws`);
-
-    this.socket.binaryType = "arraybuffer";
-
-    this.socket.onopen = () => {
-      console.log("WebSocket connection established.");
-    };
-
-    this.socket.onmessage = async (event) => {
-      let receivedBytes = new Uint8Array(event.data);
-
-      console.log("Websocket message length:", receivedBytes.length);
-
-      if (receivedBytes.length < 2) {
-        console.error("Received message is too short");
+  public static connect() {
+    return new Promise((resolve, reject) => {
+      if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+        console.warn("WebSocket is already connected.");
         return;
       }
 
-      const type = receivedBytes[0];
-      const msg = decode(receivedBytes.slice(1, receivedBytes.length), {
-        useBigInt64: true,
-      }) as any;
+      this.socket = new WebSocket(`ws://${window.location.host}/ws`);
 
-      switch (type) {
-        case types.ServerDeleted:
-          WebSocketService.emitter.emit("ServerDeleted", msg);
-          break;
-        case types.ServerModified:
-          WebSocketService.emitter.emit("ServerModified", msg);
-          break;
+      this.socket.binaryType = "arraybuffer";
 
-        case types.ChannelCreated:
-          WebSocketService.emitter.emit("ChannelCreated", msg);
-          break;
-        case types.ChannelDeleted:
-          WebSocketService.emitter.emit("ChannelDeleted", msg);
-          break;
-        case types.ChannelModified:
-          WebSocketService.emitter.emit("ChannelModified", msg);
-          break;
+      this.socket.onopen = () => {
+        console.debug("WebSocket connection established.");
+        resolve(true);
+      };
 
-        case types.MessageCreated:
-          WebSocketService.emitter.emit("MessageCreated", msg);
-          break;
-        case types.MessageDeleted:
-          WebSocketService.emitter.emit("MessageDeleted", msg);
-          break;
-        case types.MessageModified:
-          WebSocketService.emitter.emit("MessageModified", msg);
-          break;
-      }
-    };
+      this.socket.onmessage = async (event) => {
+        let receivedBytes = new Uint8Array(event.data);
 
-    this.socket.onclose = () => {
-      console.log("WebSocket connection closed.");
-      this.socket = null;
-    };
+        console.debug("Websocket message length:", receivedBytes.length);
 
-    this.socket.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
+        if (receivedBytes.length < 2) {
+          console.error("Received message is too short");
+          return;
+        }
+
+        const type = receivedBytes[0];
+        const msg = decode(receivedBytes.slice(1, receivedBytes.length), {
+          useBigInt64: true,
+        }) as any;
+
+        switch (type) {
+          case types.ServerDeleted:
+            WebSocketService.emitter.emit("ServerDeleted", msg);
+            break;
+          case types.ServerModified:
+            WebSocketService.emitter.emit("ServerModified", msg);
+            break;
+
+          case types.ChannelCreated:
+            WebSocketService.emitter.emit("ChannelCreated", msg);
+            break;
+          case types.ChannelDeleted:
+            WebSocketService.emitter.emit("ChannelDeleted", msg);
+            break;
+          case types.ChannelModified:
+            WebSocketService.emitter.emit("ChannelModified", msg);
+            break;
+
+          case types.MessageCreated:
+            WebSocketService.emitter.emit("MessageCreated", msg);
+            break;
+          case types.MessageDeleted:
+            WebSocketService.emitter.emit("MessageDeleted", msg);
+            break;
+          case types.MessageModified:
+            WebSocketService.emitter.emit("MessageModified", msg);
+            break;
+        }
+      };
+
+      this.socket.onclose = () => {
+        console.debug("WebSocket connection closed.");
+        this.socket = null;
+      };
+
+      this.socket.onerror = (error) => {
+        console.error("WebSocket error:", error);
+        reject(error);
+      };
+    });
   }
 
   public static Disconnect(): void {
     if (this.socket) {
       this.socket.close();
-      console.log("WebSocket disconnected.");
+      console.debug("WebSocket disconnected.");
       this.socket = null;
     } else {
       console.warn("No WebSocket connection to disconnect.");

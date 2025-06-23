@@ -12,7 +12,8 @@ const route = useRoute();
 
 const channels = ref<ChannelModel[]>([]);
 
-axios
+console.debug(`Getting channels for server ID ${route.params.server}`);
+await axios
   .get<Uint8Array>(
     `/api/channel/fetch?serverID=${encodeURIComponent(String(route.params.server))}`,
     {
