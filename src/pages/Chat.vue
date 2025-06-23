@@ -39,14 +39,13 @@ onBeforeUnmount(() => {
 
     <!-- channel/friend list -->
     <div class="flex flex-col min-w-60 max-w-60 h-screen grow">
-      <div class="flex grow bg-black/20">
+      <div class="flex grow overflow-y-auto bg-black/20">
         <ChannelList
           v-if="props.server"
           :key="props.server"
           :server-id="props.server"
         />
       </div>
-
       <UserPanel />
     </div>
 
