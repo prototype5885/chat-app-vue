@@ -27,6 +27,11 @@ watch(chatInput, () => {
 });
 
 function sendMsg() {
+  if (props.channelId === undefined || props.channelId === "") {
+    console.error("There is no channel to send the message to");
+    return;
+  }
+
   if (chatInput.value) {
     const message: AddMessageModel = {
       message: chatInput.value,
