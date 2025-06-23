@@ -33,7 +33,9 @@ function select() {
               <button
                 class="flex justify-center items-center w-12 h-12 bg-cover bg-center transition-all"
                 :style="{
-                  backgroundImage: `url(/cdn/avatars/${props.picture})`,
+                  backgroundImage: props.picture
+                    ? `url(/cdn/avatars/${props.picture})`
+                    : '',
                 }"
                 @click="select"
                 :class="
