@@ -2,31 +2,41 @@
 import type { MessageModel } from "@/models.ts";
 import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import axios from "axios";
-import { useRoute } from "vue-router";
 import { WebSocketService } from "@/services/websocketService";
 import { MsgPackDecode } from "@/services/messagepack";
 
-const route = useRoute();
+const props = defineProps<{
+  channelId: string;
+}>();
+
+const controller = new AbortController();
 
 const messageList = ref<MessageModel[]>([]);
 
 const loading = ref<boolean>(true);
 const endDiv = ref<HTMLDivElement | null | undefined>();
 
-console.debug(`Getting message list for channel ID ${route.params.channel}`);
-await axios
+console.debug(`Getting message list for channel ID ${props.channelId}`);
+axios
   .get<Uint8Array>(
-    `/api/message/fetch?channelID=${encodeURIComponent(String(route.params.channel))}`,
+    `/api/message/fetch?channelID=${encodeURIComponent(props.channelId)}`,
     {
       responseType: "arraybuffer",
+      signal: controller.signal,
     }
   )
   .then(function (response) {
     messageList.value = MsgPackDecode(response.data) as MessageModel[];
     loading.value = false;
   })
-  .catch((error) => {
-    console.error(error);
+  .catch((error: Error) => {
+    if (error.name == "CanceledError") {
+      console.warn(
+        "Switched channel too fast, aborting getting messages for previous channel"
+      );
+    } else {
+      console.error(error.name);
+    }
   });
 
 watch(
@@ -48,13 +58,13 @@ function messageAdded(message: MessageModel) {
 
 onUnmounted(() => {
   WebSocketService.emitter.off("MessageCreated", messageAdded);
+  controller.abort();
 });
 </script>
 
 <template>
   <div class="grow overflow-y-auto">
-    <span v-if="loading">Loading...</span>
-    <ul v-else class="py-3">
+    <ul class="py-3">
       <Message
         v-for="(msg, index) in messageList"
         :key="index"
@@ -68,6 +78,4 @@ onUnmounted(() => {
       <li ref="endDiv"></li>
     </ul>
   </div>
-
-  <MessageInput />
 </template>

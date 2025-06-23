@@ -9,15 +9,21 @@ import { onMounted, onUnmounted, ref } from "vue";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
+const controller = new AbortController();
+
+const props = defineProps<{
+  serverId: string;
+}>();
 
 const channels = ref<ChannelModel[]>([]);
 
-console.debug(`Getting channels for server ID ${route.params.server}`);
-await axios
+console.debug(`Getting channels for server ID ${props.serverId}`);
+axios
   .get<Uint8Array>(
-    `/api/channel/fetch?serverID=${encodeURIComponent(String(route.params.server))}`,
+    `/api/channel/fetch?serverID=${encodeURIComponent(props.serverId)}`,
     {
       responseType: "arraybuffer",
+      signal: controller.signal,
     }
   )
   .then(function (res) {
@@ -25,7 +31,7 @@ await axios
 
     if (channels.value.length !== 0) {
       const lastChannel = localStorage.getItem(
-        "last-channel-on-" + String(route.params.server)
+        "last-channel-on-" + props.serverId
       );
       if (lastChannel) {
         selectChannel(BigInt(lastChannel));
@@ -34,12 +40,18 @@ await axios
       }
     }
   })
-  .catch((error) => {
-    console.error(error);
+  .catch((error: Error) => {
+    if (error.name == "CanceledError") {
+      console.warn(
+        "Switched server too fast, aborting getting channels for previous server"
+      );
+    } else {
+      console.error(error.name);
+    }
   });
 
 function addChannel() {
-  const currentServer = encodeURIComponent(String(route.params.server));
+  const currentServer = encodeURIComponent(props.serverId);
   const channelName = encodeURIComponent("New Channel"); // temporary
 
   axios
@@ -49,13 +61,14 @@ function addChannel() {
     });
 }
 
-function selectChannel(channelID: bigint) {
+async function selectChannel(channelID: bigint) {
   if (isChannelSelected(channelID)) return;
   localStorage.setItem(
-    "last-channel-on-" + String(route.params.server),
+    "last-channel-on-" + props.serverId,
     channelID.toString()
   );
-  router.push(`/chat/${route.params.server}/${channelID}`);
+  console.debug(`Selecting channel ID ${channelID}`);
+  await router.push(`/chat/${props.serverId}/${channelID}`);
 }
 
 function isChannelSelected(channelID: bigint): boolean {
@@ -74,6 +87,7 @@ function channelAdded(channel: ChannelModel) {
 }
 
 onUnmounted(() => {
+  controller.abort();
   WebSocketService.emitter.off("ChannelCreated", channelAdded);
 });
 </script>
@@ -82,7 +96,7 @@ onUnmounted(() => {
   <div class="flex flex-col min-w-60 max-w-60 grow overflow-y-auto">
     <Top>
       <span>
-        {{ route.params.server }}
+        {{ props.serverId }}
       </span>
     </Top>
     <div

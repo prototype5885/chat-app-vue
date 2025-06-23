@@ -7,10 +7,8 @@ import Home from "./pages/Home.vue";
 import About from "./pages/About.vue";
 import SignUp from "./pages/SignUp.vue";
 import Login from "./pages/Login.vue";
-import First from "./components/chat/parts/First.vue";
-import Second from "./components/chat/parts/Second.vue";
-import Third from "./components/chat/parts/Third.vue";
 import Test from "./pages/Test.vue";
+import Chat from "./pages/Chat.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -29,23 +27,9 @@ export const router = createRouter({
     },
 
     {
-      path: "/chat",
-      component: First,
-      redirect: "/chat/100",
-      children: [
-        {
-          path: ":server",
-          component: Second,
-          props: true,
-          children: [
-            {
-              path: ":channel",
-              component: Third,
-              props: true,
-            },
-          ],
-        },
-      ],
+      path: "/chat/:server?/:channel?",
+      component: Chat,
+      props: true,
     },
   ],
 });

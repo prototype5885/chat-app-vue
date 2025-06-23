@@ -2,13 +2,14 @@
 import { ref, watch } from "vue";
 import axios from "axios";
 import type { AddMessageModel } from "@/models";
-import { useRoute } from "vue-router";
 import { MsgPackEncode } from "@/services/messagepack";
 
 const chatInput = ref<string>();
 const typing = ref<boolean>(false);
 
-const route = useRoute();
+const props = defineProps<{
+  channelId: string | undefined;
+}>();
 
 const handleKeyDown = (e: KeyboardEvent) => {
   if (e.key === "Enter" && !e.shiftKey) {
@@ -29,7 +30,7 @@ function sendMsg() {
   if (chatInput.value) {
     const message: AddMessageModel = {
       message: chatInput.value,
-      channelID: BigInt(String(route.params.channel)),
+      channelID: BigInt(props.channelId),
     };
 
     axios
