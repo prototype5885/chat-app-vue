@@ -2,6 +2,7 @@
 import { router } from "@/main";
 import { reactive, ref } from "vue";
 import axios from "axios";
+import { MsgPackDecode, MsgPackEncode } from "@/services/messagepack";
 
 interface SignUpForm {
   email: string;
@@ -26,14 +27,17 @@ async function submit() {
   errorResponseStatus.value = "";
 
   await axios
-    .post("/api/auth/register", registerForm)
+    .post("/api/auth/register", MsgPackEncode(registerForm), {
+      responseType: "arraybuffer",
+    })
     .then(function (resp) {
       router.push("/login");
     })
     .catch((e) => {
       if (e.status === 400) {
-        emailError.value = e.response.data["Email"];
-        passwordError.value = e.response.data["Password"];
+        const response = MsgPackDecode(e.response.data);
+        emailError.value = response["Email"];
+        passwordError.value = response["Password"];
       } else {
         errorResponseStatus.value = e.response.statusText;
       }

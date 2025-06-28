@@ -2,6 +2,7 @@
 import axios from "axios";
 import { router } from "@/main";
 import { reactive, ref } from "vue";
+import { MsgPackEncode } from "@/services/messagepack";
 
 interface LoginForm {
   email: string;
@@ -27,8 +28,8 @@ async function submit() {
   }
 
   await axios
-    .post(path, loginForm, {
-      withCredentials: true,
+    .post(path, MsgPackEncode(loginForm), {
+      responseType: "arraybuffer",
     })
     .then(function (response) {
       if (response.status === 200) {
