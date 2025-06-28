@@ -40,6 +40,27 @@ async function selectServer(serverID: bigint) {
   console.debug(`Selecting server ID ${serverID}`);
   await router.push(`/chat/${serverID}`);
 }
+
+async function renameServer(serverID: bigint) {
+  console.debug(`Renaming server ID ${serverID}`);
+  axios
+    .post(
+      `/api/server/rename?serverID=${encodeURIComponent(String(serverID))}&name=${encodeURIComponent("new name")}`
+    )
+    .catch((error: Error) => {
+      console.error(error);
+      useToast().add({ title: error.message, color: "error" });
+    });
+}
+
+async function deleteServer(serverID: bigint) {
+  console.debug(`Deleting server ID ${serverID}`);
+  axios
+    .post(`/api/server/delete?serverID=${encodeURIComponent(String(serverID))}`)
+    .catch((error) => {
+      console.error(error);
+    });
+}
 </script>
 
 <template>
@@ -67,6 +88,9 @@ async function selectServer(serverID: bigint) {
         [
           {
             label: 'Rename server',
+            onSelect() {
+              renameServer(server.id);
+            },
           },
         ],
         [
@@ -79,6 +103,9 @@ async function selectServer(serverID: bigint) {
           {
             label: 'Delete server',
             color: 'error' as const,
+            onSelect() {
+              deleteServer(server.id);
+            },
           },
         ],
       ]"
