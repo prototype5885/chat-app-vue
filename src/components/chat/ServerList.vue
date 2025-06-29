@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { router } from "@/main";
 import type { ServerModel } from "@/models";
+import { ErrorToast } from "@/services/macros";
 import { MsgPackDecode } from "@/services/messagepack";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Mail } from "lucide-vue-next";
 import { ref } from "vue";
 import { useRoute } from "vue-router";
@@ -18,12 +19,13 @@ axios
   .then(function (response) {
     serverList.value = MsgPackDecode(response.data) as ServerModel[];
   })
-  .catch((error) => {
-    console.error(error);
-    if (error.response.status === 401) {
+  .catch((e: AxiosError) => {
+    if (e.status === 401) {
+      console.warn(e);
       router.push("/");
       return;
     }
+    ErrorToast(e.message);
   });
 
 if (route.params.server === undefined || route.params.server === "") {
@@ -47,9 +49,8 @@ async function renameServer(serverID: bigint) {
     .post(
       `/api/server/rename?serverID=${encodeURIComponent(String(serverID))}&name=${encodeURIComponent("new name")}`
     )
-    .catch((error: Error) => {
-      console.error(error);
-      useToast().add({ title: error.message, color: "error" });
+    .catch((e: AxiosError) => {
+      ErrorToast(e.message);
     });
 }
 
@@ -57,8 +58,8 @@ async function deleteServer(serverID: bigint) {
   console.debug(`Deleting server ID ${serverID}`);
   axios
     .post(`/api/server/delete?serverID=${encodeURIComponent(String(serverID))}`)
-    .catch((error) => {
-      console.error(error);
+    .catch((e: AxiosError) => {
+      ErrorToast(e.message);
     });
 }
 </script>

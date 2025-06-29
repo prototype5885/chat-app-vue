@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { router } from "@/main";
 import { reactive, ref } from "vue";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { MsgPackDecode, MsgPackEncode } from "@/services/messagepack";
+import { ErrorToast } from "@/services/macros";
 
 interface SignUpForm {
   email: string;
@@ -19,12 +20,9 @@ const registerForm = reactive<SignUpForm>({
 const emailError = ref<string>("");
 const passwordError = ref<string>("");
 
-const errorResponseStatus = ref<string>("");
-
 async function submit() {
   emailError.value = "";
   passwordError.value = "";
-  errorResponseStatus.value = "";
 
   await axios
     .post("/api/auth/register", MsgPackEncode(registerForm), {
@@ -33,13 +31,13 @@ async function submit() {
     .then(function (resp) {
       router.push("/login");
     })
-    .catch((e) => {
+    .catch((e: AxiosError) => {
       if (e.status === 400) {
-        const response = MsgPackDecode(e.response.data);
+        const response = MsgPackDecode(e.response?.data as Uint8Array);
         emailError.value = response["Email"];
         passwordError.value = response["Password"];
       } else {
-        errorResponseStatus.value = e.response.statusText;
+        ErrorToast(e.message);
       }
     });
 }
@@ -76,7 +74,6 @@ async function submit() {
         />
       </UFormField>
       <UButton type="submit" loading-auto trailing>Sign up</UButton>
-      <h1 class="text-red-500">{{ errorResponseStatus }}</h1>
       <div>
         <ULink to="/login">Already have an account?</ULink>
       </div>

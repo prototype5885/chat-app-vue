@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { router } from "@/main";
 import type { ChannelModel } from "@/models";
+import { ErrorToast } from "@/services/macros";
 import { MsgPackDecode } from "@/services/messagepack";
 import { WebSocketService } from "@/services/websocketService";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Plus } from "lucide-vue-next";
 import { onMounted, onUnmounted, ref } from "vue";
 import { useRoute } from "vue-router";
@@ -40,13 +41,13 @@ axios
       }
     }
   })
-  .catch((error: Error) => {
-    if (error.name == "CanceledError") {
+  .catch((e: AxiosError) => {
+    if (e.name == "CanceledError") {
       console.warn(
         "Switched server too fast, aborting getting channels for previous server"
       );
     } else {
-      console.error(error.name);
+      ErrorToast(e.message);
     }
   });
 
@@ -56,8 +57,8 @@ function addChannel() {
 
   axios
     .post(`/api/channel/create?serverID=${currentServer}&name=${channelName}`)
-    .catch((error) => {
-      console.error(error);
+    .catch((e: AxiosError) => {
+      ErrorToast(e.message);
     });
 }
 

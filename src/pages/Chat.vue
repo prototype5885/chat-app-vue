@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { router } from "@/main";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { onBeforeUnmount, watch } from "vue";
 import { WebSocketService } from "@/services/websocketService";
 
@@ -12,15 +12,15 @@ const props = defineProps({
 });
 
 console.debug("Getting session ID cookie...");
-await axios.get("/api/auth/newSession").catch((error) => {
-  console.error(error);
+await axios.get("/api/auth/newSession").catch((e: AxiosError) => {
+  console.error(e);
   router.push("/");
   return;
 });
 
 console.debug("Connecting to websocket...");
-await WebSocketService.connect().catch((error) => {
-  console.error(error);
+await WebSocketService.connect().catch((e: AxiosError) => {
+  console.error(e);
   router.push("/");
   return;
 });

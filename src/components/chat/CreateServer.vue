@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { ServerModel } from "@/models";
+import { ErrorToast } from "@/services/macros";
 import { MsgPackDecode } from "@/services/messagepack";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Plus } from "lucide-vue-next";
 import { onUpdated, reactive, ref } from "vue";
 
@@ -45,9 +46,8 @@ function submit() {
       modalOpen.value = false;
       emit("created-server", server.id);
     })
-    .catch((error) => {
-      console.error("Error adding server", error.response.statusText);
-      errorText.value = error.response.statusText;
+    .catch((e: AxiosError) => {
+      ErrorToast(e.message);
     });
 }
 </script>

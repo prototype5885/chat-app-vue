@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import type { AddMessageModel } from "@/models";
 import { MsgPackEncode } from "@/services/messagepack";
+import { ErrorToast } from "@/services/macros";
 
 const chatInput = ref<string>();
 const typing = ref<boolean>(false);
@@ -43,8 +44,8 @@ function sendMsg() {
       .then(() => {
         chatInput.value = "";
       })
-      .catch((error) => {
-        console.error(error);
+      .catch((e: AxiosError) => {
+        ErrorToast(e.message);
       });
   }
 }

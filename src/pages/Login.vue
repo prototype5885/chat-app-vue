@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { router } from "@/main";
 import { reactive, ref } from "vue";
 import { MsgPackEncode } from "@/services/messagepack";
+import { ErrorToast } from "@/services/macros";
 
 interface LoginForm {
   email: string;
@@ -16,11 +17,7 @@ const loginForm = reactive<LoginForm>({
 
 const rememberMe = ref<boolean>(false);
 
-const errorResponse = ref<string>();
-
 async function submit() {
-  errorResponse.value = "";
-
   let path = "/api/auth/login";
 
   if (rememberMe.value === true) {
@@ -36,8 +33,8 @@ async function submit() {
         router.push("/chat");
       }
     })
-    .catch((error) => {
-      errorResponse.value = error.response.statusText;
+    .catch((e: AxiosError) => {
+      ErrorToast(e.message);
     });
 }
 </script>
@@ -66,7 +63,6 @@ async function submit() {
       </UFormField>
       <UCheckbox v-model="rememberMe" label="Remember me" />
       <UButton type="submit" loading-auto trailing>Login</UButton>
-      <h1 class="text-red-500">{{ errorResponse }}</h1>
       <div>
         <span>No account?</span>
         <ULink to="/register">Register</ULink>

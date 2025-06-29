@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { MessageModel } from "@/models.ts";
 import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { WebSocketService } from "@/services/websocketService";
 import { MsgPackDecode } from "@/services/messagepack";
+import { ErrorToast } from "@/services/macros";
 
 const props = defineProps<{
   channelId: string;
@@ -29,13 +30,13 @@ axios
     messageList.value = MsgPackDecode(response.data) as MessageModel[];
     loading.value = false;
   })
-  .catch((error: Error) => {
-    if (error.name == "CanceledError") {
+  .catch((e: AxiosError) => {
+    if (e.name == "CanceledError") {
       console.warn(
         "Switched channel too fast, aborting getting messages for previous channel"
       );
     } else {
-      console.error(error.name);
+      ErrorToast(e.message);
     }
   });
 

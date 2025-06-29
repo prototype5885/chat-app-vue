@@ -3,7 +3,8 @@ import type { NavigationMenuItem } from "@nuxt/ui";
 import { router } from "@/main";
 import { ref } from "vue";
 import { useColorMode } from "@vueuse/core";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import { ErrorToast } from "@/services/macros";
 
 const mode = useColorMode();
 
@@ -18,7 +19,8 @@ axios
       loading.value = false;
     }
   })
-  .catch((e) => {
+  .catch((e: AxiosError) => {
+    ErrorToast(e.message);
     loggedIn.value = false;
     loading.value = false;
   });
