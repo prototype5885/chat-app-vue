@@ -24,7 +24,7 @@ type EmitterEvents = {
   ChannelModified: ChannelModel;
 
   MessageCreated: MessageModel;
-  MessageDeleted: string;
+  MessageDeleted: bigint;
   MessageModified: MessageModel;
 };
 

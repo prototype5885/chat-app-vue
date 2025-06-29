@@ -51,14 +51,25 @@ watch(
 
 onMounted(() => {
   WebSocketService.emitter.on("MessageCreated", messageAdded);
+  WebSocketService.emitter.on("MessageDeleted", messageDeleted);
 });
 
 function messageAdded(message: MessageModel) {
   messageList.value.push(message);
 }
 
+function messageDeleted(messageID: bigint) {
+  for (let i = 0; i < messageList.value.length; i++) {
+    if (messageList.value[i].id === messageID) {
+      messageList.value.splice(i, 1);
+      return;
+    }
+  }
+}
+
 onUnmounted(() => {
   WebSocketService.emitter.off("MessageCreated", messageAdded);
+  WebSocketService.emitter.off("MessageDeleted", messageDeleted);
   controller.abort();
 });
 </script>
