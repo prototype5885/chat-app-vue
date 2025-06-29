@@ -20,7 +20,12 @@ axios
     }
   })
   .catch((e: AxiosError) => {
-    ErrorToast(e.message);
+    if (e.status === 401) {
+      console.warn(e);
+    } else {
+      ErrorToast(e.message);
+    }
+
     loggedIn.value = false;
     loading.value = false;
   });
