@@ -75,8 +75,11 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="grow overflow-y-auto">
-    <ul class="py-3">
+  <div class="grow overflow-y-auto py-3">
+    <h1 v-if="loading">
+      <GhostMessages />
+    </h1>
+    <ul v-else>
       <Message
         v-for="(msg, index) in messageList"
         :key="index"
