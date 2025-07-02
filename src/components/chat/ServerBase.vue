@@ -1,27 +1,17 @@
 <script setup lang="ts">
-import { defineProps, ref } from "vue";
-import ContextMenu from "primevue/contextmenu";
-import type { MenuItem } from "primevue/menuitem";
+import { defineProps } from "vue";
 
 const props = defineProps<{
   name: string;
   picture?: string;
   selected: boolean;
-  ctxItems: MenuItem[];
 }>();
-
-const contextMenu = ref();
 
 const emit = defineEmits(["clicked"]);
 
 function select() {
   emit("clicked");
 }
-
-const onRightClick = (event: Event) => {
-  if (props.ctxItems?.length === 0) return;
-  contextMenu.value.show(event);
-};
 </script>
 
 <template>
@@ -32,26 +22,22 @@ const onRightClick = (event: Event) => {
         :class="selected ? 'h-8' : 'h-2 group-hover:h-5'"
       ></div>
       <div class="w-16 flex justify-center" v-tooltip="props.name">
-        <div @contextmenu="onRightClick">
-          <button
-            class="flex justify-center items-center w-12 h-12 bg-cover bg-center transition-all"
-            :style="{
-              backgroundImage: props.picture
-                ? `url(/cdn/avatars/${props.picture})`
-                : '',
-            }"
-            @click="select"
-            :class="
-              selected
-                ? 'rounded-[35%] bg-blue-500'
-                : 'rounded-[50%] group-hover:rounded-[35%] group-hover:bg-blue-500 bg-white/7'
-            "
-          >
-            <slot></slot>
-          </button>
-
-          <ContextMenu ref="contextMenu" :model="props.ctxItems"></ContextMenu>
-        </div>
+        <button
+          class="flex justify-center items-center w-12 h-12 bg-cover bg-center transition-all"
+          :style="{
+            backgroundImage: props.picture
+              ? `url(/cdn/avatars/${props.picture})`
+              : '',
+          }"
+          @click="select"
+          :class="
+            selected
+              ? 'rounded-[35%] bg-blue-500'
+              : 'rounded-[50%] group-hover:rounded-[35%] group-hover:bg-blue-500 bg-white/7'
+          "
+        >
+          <slot></slot>
+        </button>
       </div>
     </div>
   </li>

@@ -13,6 +13,8 @@ import CreateServer from "@/components/chat/CreateServer.vue";
 import ServerBase from "@/components/chat/ServerBase.vue";
 import Separator from "@/components/Separator.vue";
 import { useToast } from "vue-toast-notification";
+import type { MenuItem } from "primevue/menuitem";
+import ContextMenu from "primevue/contextmenu";
 
 const route = useRoute();
 const confirm = useConfirm();
@@ -73,9 +75,9 @@ async function deleteServer(serverID: bigint) {
     });
 }
 
-const confirmDeletion = (serverID: bigint) => {
+const confirmDeletion = (server: ServerModel) => {
   confirm.require({
-    message: "Do you want to delete this server?",
+    message: `Delete "${server.name}"?`,
     icon: "pi pi-info-circle",
     rejectProps: {
       label: "Cancel",
@@ -87,22 +89,51 @@ const confirmDeletion = (serverID: bigint) => {
       severity: "danger",
     },
     accept: () => {
-      deleteServer(serverID);
+      deleteServer(server.id);
     },
     reject: () => {},
   });
+};
+
+// context menu
+const rightClickedServer = ref<ServerModel>();
+const ctxMenu = ref();
+
+const serverCtxMenu = ref<MenuItem[]>([
+  {
+    label: "Rename server",
+    command: () => {
+      if (!rightClickedServer.value) return;
+      renameServer(rightClickedServer.value.id);
+    },
+  },
+  {
+    separator: true,
+  },
+  {
+    label: "Delete server",
+    command: () => {
+      if (!rightClickedServer.value) return;
+      confirmDeletion(rightClickedServer.value);
+    },
+  },
+]);
+
+const onRightClick = (event: Event, server: ServerModel) => {
+  rightClickedServer.value = server;
+  ctxMenu.value.show(event);
 };
 </script>
 
 <template>
   <ConfirmPopup />
+  <ContextMenu ref="ctxMenu" :model="serverCtxMenu"></ContextMenu>
   <ul class="flex flex-col items-center py-2">
     <!-- dm button -->
     <ServerBase
       name="DM"
       :selected="isServerSelected(DM)"
       @clicked="selectServer(DM)"
-      :ctx-items="[]"
     >
       <Mail :size="32" :strokeWidth="1" />
     </ServerBase>
@@ -116,25 +147,9 @@ const confirmDeletion = (serverID: bigint) => {
       :id="server.id"
       :name="server.name"
       :picture="server.picture"
-      :ctx-items="[
-        {
-          label: 'Rename server',
-          command: () => {
-            renameServer(server.id);
-          },
-        },
-        {
-          separator: true,
-        },
-        {
-          label: 'Delete server',
-          command: () => {
-            confirmDeletion(server.id);
-          },
-        },
-      ]"
       :selected="isServerSelected(server.id)"
       @clicked="selectServer(server.id)"
+      @contextmenu="onRightClick($event, server)"
     >
       <span v-if="server.picture == undefined || server.picture == ''">{{
         server.name[0].toUpperCase()
