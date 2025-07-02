@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import type { ServerModel } from "@/models";
-import { ErrorToast } from "@/services/macros";
 import { MsgPackDecode } from "@/services/messagepack";
 import axios, { AxiosError } from "axios";
 import { Plus } from "lucide-vue-next";
 import { onUpdated, reactive, ref } from "vue";
+import ServerBase from "@/components/chat/ServerBase.vue";
+import ProfilePicUploader from "@/components/chat/ProfilePicUploader.vue";
+import Dialog from "primevue/dialog";
+import { useToast } from "vue-toast-notification";
 
 const serverList = defineModel<ServerModel[]>({ required: true });
 
@@ -18,8 +21,7 @@ const createServer = reactive<CreateServerForm>({
   picture: null,
 });
 
-const modalOpen = ref<boolean>(false);
-const errorText = ref<string>("");
+const editWindowVisible = ref<boolean>(false);
 
 const emit = defineEmits(["created-server"]);
 
@@ -43,40 +45,53 @@ function submit() {
     .then(function (response) {
       const server = MsgPackDecode(response.data) as ServerModel;
       serverList.value.push(server);
-      modalOpen.value = false;
+      editWindowVisible.value = false;
       emit("created-server", server.id);
     })
     .catch((e: AxiosError) => {
-      ErrorToast(e.message);
+      console.error(e);
+      useToast().error(e.message);
     });
 }
 </script>
 
 <template>
-  <UModal title="Create Server" description=" " v-model:open="modalOpen">
-    <ServerBase name="Add a server" :selected="false" pic="" :ctx-items="[]">
-      <Plus />
-    </ServerBase>
-    <template #body>
+  <ServerBase
+    name="Add a server"
+    :selected="false"
+    pic=""
+    :ctx-items="[]"
+    @clicked="editWindowVisible = true"
+  >
+    <Plus />
+    <Dialog
+      v-model:visible="editWindowVisible"
+      header="Create server"
+      pt:mask:class="backdrop-brightness-50"
+      modal
+    >
       <ProfilePicUploader v-model="createServer.picture" />
-      <UForm class="space-y-2" @submit.prevent="submit" :state="createServer">
-        <UFormField label="Name" required>
-          <UInput
-            v-model="createServer.name"
-            placeholder="Server name"
-            :maxlength="64"
-            required
-          />
-        </UFormField>
-        <UButton
+      <form
+        class="flex flex-col"
+        @submit.prevent="submit"
+        :state="createServer"
+      >
+        <input
+          v-model="createServer.name"
+          placeholder="Server name"
+          :maxlength="64"
+          required
+          class="outline-1"
+        />
+        <br />
+        <button
           type="submit"
-          loading-auto
-          trailing
           :disabled="createServer.name === '' ? true : false"
-          >Create</UButton
+          class="bg-black/50 disabled:bg-black/20"
         >
-      </UForm>
-      <span class="text-red-500">{{ errorText }}</span>
-    </template>
-  </UModal>
+          Create
+        </button>
+      </form>
+    </Dialog>
+  </ServerBase>
 </template>

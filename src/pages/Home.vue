@@ -1,24 +1,25 @@
 <script setup lang="ts">
+import MainButton from "@/components/MainButton.vue";
 import { router } from "@/main";
 </script>
 
 <template>
   <div class="space-x-4">
-    <UButton
-      label="Sign up"
+    <MainButton
       @click="
         () => {
           router.push(`/register`);
         }
       "
+      label="Sign up"
     />
-    <UButton
-      label="Chat"
+    <MainButton
       @click="
         () => {
           router.push(`/chat`);
         }
       "
+      label="Chat"
     />
   </div>
 </template>

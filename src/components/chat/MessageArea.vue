@@ -4,7 +4,9 @@ import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import axios, { AxiosError } from "axios";
 import { WebSocketService } from "@/services/websocketService";
 import { MsgPackDecode } from "@/services/messagepack";
-import { ErrorToast } from "@/services/macros";
+import GhostMessages from "./GhostMessages.vue";
+import Message from "./Message.vue";
+import { useToast } from "vue-toast-notification";
 
 const props = defineProps<{
   channelId: string;
@@ -36,7 +38,8 @@ axios
         "Switched channel too fast, aborting getting messages for previous channel"
       );
     } else {
-      ErrorToast(e.message);
+      console.error(e);
+      useToast().error(e.message);
     }
   });
 

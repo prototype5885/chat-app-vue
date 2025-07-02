@@ -3,7 +3,10 @@ import { ref, watch } from "vue";
 import axios, { AxiosError } from "axios";
 import type { AddMessageModel } from "@/models";
 import { MsgPackEncode } from "@/services/messagepack";
-import { ErrorToast } from "@/services/macros";
+import AddAttachment from "@/components/icons/AddAttachment.vue";
+import MessageTyping from "@/components/chat/MessageTyping.vue";
+import AutoResizeTextarea from "@/components/AutoResizeTextarea.vue";
+import { useToast } from "vue-toast-notification";
 
 const chatInput = ref<string>();
 const typing = ref<boolean>(false);
@@ -45,7 +48,8 @@ function sendMsg() {
         chatInput.value = "";
       })
       .catch((e: AxiosError) => {
-        ErrorToast(e.message);
+        console.error(e);
+        useToast().error(e.message);
       });
   }
 }
@@ -53,24 +57,22 @@ function sendMsg() {
 
 <template>
   <div class="flex flex-col">
-    <div class="flex rounded-lg mx-4 bg-white/5 border border-white/10">
+    <div
+      class="flex rounded-lg mx-4 bg-white/5 border border-white/10 overflow-hidden"
+    >
       <button class="group flex justify-center items-center mx-2">
         <AddAttachment class="fill-gray-300 group-hover:fill-white size-7" />
       </button>
-      <UTextarea
+      <AutoResizeTextarea
         v-model="chatInput"
-        class="grow py-2"
+        :min-rows="1"
+        :max-rows="12"
         placeholder="Message ..."
-        :rows="1"
-        autoresize
-        variant="none"
-        :maxrows="16"
-        :ui="{
-          base: 'text-white resize-none',
-        }"
         @keydown="handleKeyDown"
-      ></UTextarea>
-      <UButton @click="sendMsg">send</UButton>
+      ></AutoResizeTextarea>
+      <button @click="sendMsg" class="bg-black/10 p-2" @keydown="handleKeyDown">
+        send
+      </button>
     </div>
     <div class="min-h-6 max-h-6">
       <MessageTyping v-if="typing" user="user" />

@@ -3,6 +3,12 @@ import { router } from "@/main";
 import axios, { AxiosError } from "axios";
 import { onBeforeUnmount, watch } from "vue";
 import { WebSocketService } from "@/services/websocketService";
+import MessageArea from "@/components/chat/MessageArea.vue";
+import MessageInput from "@/components/chat/MessageInput.vue";
+import Top from "@/components/chat/Top.vue";
+import ServerList from "@/components/chat/ServerList.vue";
+import ChannelList from "@/components/chat/ChannelList.vue";
+import UserPanel from "@/components/chat/UserPanel.vue";
 
 const theme = "diskord";
 

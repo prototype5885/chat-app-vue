@@ -3,7 +3,10 @@ import { router } from "@/main";
 import { reactive, ref } from "vue";
 import axios, { AxiosError } from "axios";
 import { MsgPackDecode, MsgPackEncode } from "@/services/messagepack";
-import { ErrorToast } from "@/services/macros";
+import { useToast } from "vue-toast-notification";
+import MainButton from "@/components/MainButton.vue";
+import FormInput from "@/components/FormInput.vue";
+import { RouterLink } from "vue-router";
 
 interface SignUpForm {
   email: string;
@@ -37,7 +40,8 @@ async function submit() {
         emailError.value = response["Email"];
         passwordError.value = response["Password"];
       } else {
-        ErrorToast(e.message);
+        console.error(e);
+        useToast().error(e.message);
       }
     });
 }
@@ -45,38 +49,32 @@ async function submit() {
 
 <template>
   <div>
-    <UForm
-      class="space-y-2 border rounded-2xl w-fit p-12"
+    <form
+      class="space-y-2 border rounded-2xl w-fit p-12 flex flex-col"
       @submit.prevent="submit"
       :state="registerForm"
     >
-      <UFormField label="Email" required :error="emailError">
-        <UInput
-          v-model="registerForm.email"
-          placeholder="Enter your email"
-          class="w-64"
-        />
-      </UFormField>
-      <UFormField label="Password" required :error="passwordError">
-        <UInput
-          v-model="registerForm.password"
-          placeholder="Enter a password"
-          class="w-64"
-          type="password"
-        />
-      </UFormField>
-      <UFormField label="Password again" required :error="passwordError">
-        <UInput
-          v-model="registerForm.confirmPassword"
-          placeholder="Enter password again"
-          class="w-64"
-          type="password"
-        />
-      </UFormField>
-      <UButton type="submit" loading-auto trailing>Sign up</UButton>
+      <FormInput
+        v-model="registerForm.email"
+        placeholder="Enter your email"
+        :error="emailError"
+      />
+      <FormInput
+        v-model="registerForm.password"
+        placeholder="Enter a password"
+        :error="passwordError"
+      />
+      <FormInput
+        v-model="registerForm.confirmPassword"
+        placeholder="Enter the password again"
+        :error="passwordError"
+      />
+      <MainButton label="Sign up" type="submit" />
+
       <div>
-        <ULink to="/login">Already have an account?</ULink>
+        <span>Already have an account?</span>
+        <RouterLink to="/login">Login</RouterLink>
       </div>
-    </UForm>
+    </form>
   </div>
 </template>

@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { router } from "@/main";
 import type { ChannelModel } from "@/models";
-import { ErrorToast } from "@/services/macros";
 import { MsgPackDecode } from "@/services/messagepack";
 import { WebSocketService } from "@/services/websocketService";
 import axios, { AxiosError } from "axios";
 import { Plus } from "lucide-vue-next";
 import { onMounted, onUnmounted, ref } from "vue";
 import { useRoute } from "vue-router";
+import Top from "./Top.vue";
+import Channel from "./Channel.vue";
+import { useToast } from "vue-toast-notification";
 
 const route = useRoute();
 const controller = new AbortController();
@@ -47,7 +49,8 @@ axios
         "Switched server too fast, aborting getting channels for previous server"
       );
     } else {
-      ErrorToast(e.message);
+      console.error(e);
+      useToast().error(e.message);
     }
   });
 
@@ -58,7 +61,8 @@ function addChannel() {
   axios
     .post(`/api/channel/create?serverID=${currentServer}&name=${channelName}`)
     .catch((e: AxiosError) => {
-      ErrorToast(e.message);
+      console.error(e);
+      useToast().error(e.message);
     });
 }
 
@@ -105,10 +109,9 @@ onUnmounted(() => {
     >
       <div class="flex flex-row justify-between">
         <span class="hover:text-white cursor-pointer">Text Channels</span>
-        <UPopover mode="hover" arrow :content="{ side: 'top' }">
+        <div v-tooltip.top="'Create Channel'">
           <Plus class="hover:text-white cursor-pointer" @click="addChannel" />
-          <template #content>Create channel</template>
-        </UPopover>
+        </div>
       </div>
       <ul class="flex flex-col">
         <Channel

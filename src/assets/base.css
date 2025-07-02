@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "@nuxt/ui";
+@import "tailwindcss-primeui";
 
 @theme static {
   --color-diskord: rgb(66, 68, 75);

@@ -1,14 +1,21 @@
 <script setup lang="ts">
 import { router } from "@/main";
 import type { ServerModel } from "@/models";
-import { ErrorToast } from "@/services/macros";
 import { MsgPackDecode } from "@/services/messagepack";
 import axios, { AxiosError } from "axios";
 import { Mail } from "lucide-vue-next";
 import { ref } from "vue";
 import { useRoute } from "vue-router";
+import { useConfirm } from "primevue/useconfirm";
+
+import ConfirmPopup from "primevue/confirmpopup";
+import CreateServer from "@/components/chat/CreateServer.vue";
+import ServerBase from "@/components/chat/ServerBase.vue";
+import Separator from "@/components/Separator.vue";
+import { useToast } from "vue-toast-notification";
 
 const route = useRoute();
+const confirm = useConfirm();
 
 const DM: bigint = 100n;
 const serverList = ref<ServerModel[]>([]);
@@ -25,7 +32,8 @@ axios
       router.push("/");
       return;
     }
-    ErrorToast(e.message);
+    console.error(e);
+    useToast().error(e.message);
   });
 
 if (route.params.server === undefined || route.params.server === "") {
@@ -50,7 +58,8 @@ async function renameServer(serverID: bigint) {
       `/api/server/rename?serverID=${encodeURIComponent(String(serverID))}&name=${encodeURIComponent("new name")}`
     )
     .catch((e: AxiosError) => {
-      ErrorToast(e.message);
+      console.error(e);
+      useToast().error(e.message);
     });
 }
 
@@ -59,12 +68,34 @@ async function deleteServer(serverID: bigint) {
   axios
     .post(`/api/server/delete?serverID=${encodeURIComponent(String(serverID))}`)
     .catch((e: AxiosError) => {
-      ErrorToast(e.message);
+      console.error(e);
+      useToast().error(e.message);
     });
 }
+
+const confirmDeletion = (serverID: bigint) => {
+  confirm.require({
+    message: "Do you want to delete this server?",
+    icon: "pi pi-info-circle",
+    rejectProps: {
+      label: "Cancel",
+      severity: "secondary",
+      outlined: true,
+    },
+    acceptProps: {
+      label: "Delete",
+      severity: "danger",
+    },
+    accept: () => {
+      deleteServer(serverID);
+    },
+    reject: () => {},
+  });
+};
 </script>
 
 <template>
+  <ConfirmPopup />
   <ul class="flex flex-col items-center py-2">
     <!-- dm button -->
     <ServerBase
@@ -76,7 +107,7 @@ async function deleteServer(serverID: bigint) {
       <Mail :size="32" :strokeWidth="1" />
     </ServerBase>
 
-    <USeparator class="w-8 py-2" />
+    <Separator class="w-8 py-2" />
 
     <!-- server list -->
     <ServerBase
@@ -86,29 +117,21 @@ async function deleteServer(serverID: bigint) {
       :name="server.name"
       :picture="server.picture"
       :ctx-items="[
-        [
-          {
-            label: 'Rename server',
-            onSelect() {
-              renameServer(server.id);
-            },
+        {
+          label: 'Rename server',
+          command: () => {
+            renameServer(server.id);
           },
-        ],
-        [
-          {
-            label: 'Show Sidebar',
-            kbds: ['meta', 's'],
+        },
+        {
+          separator: true,
+        },
+        {
+          label: 'Delete server',
+          command: () => {
+            confirmDeletion(server.id);
           },
-        ],
-        [
-          {
-            label: 'Delete server',
-            color: 'error' as const,
-            onSelect() {
-              deleteServer(server.id);
-            },
-          },
-        ],
+        },
       ]"
       :selected="isServerSelected(server.id)"
       @clicked="selectServer(server.id)"
@@ -118,7 +141,7 @@ async function deleteServer(serverID: bigint) {
       }}</span>
     </ServerBase>
 
-    <USeparator v-if="serverList.length !== 0" class="w-8 py-2" />
+    <Separator v-if="serverList.length !== 0" class="w-8 py-2" />
 
     <!-- add server button -->
     <CreateServer

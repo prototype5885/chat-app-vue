@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import type { NavigationMenuItem } from "@nuxt/ui";
 import { router } from "@/main";
 import { ref } from "vue";
 import { useColorMode } from "@vueuse/core";
 import axios, { AxiosError } from "axios";
-import { ErrorToast } from "@/services/macros";
+import { useToast } from "vue-toast-notification";
+import MainButton from "@/components/MainButton.vue";
+import { RouterLink } from "vue-router";
 
 const mode = useColorMode();
 
@@ -23,42 +24,24 @@ axios
     if (e.status === 401) {
       console.warn(e);
     } else {
-      ErrorToast(e.message);
+      console.error(e);
+      useToast().error(e.message);
     }
 
     loggedIn.value = false;
     loading.value = false;
   });
-
-const items = ref<NavigationMenuItem[]>([
-  {
-    label: "Home",
-    to: "/home",
-  },
-  {
-    label: "About",
-    to: "/about",
-  },
-  {
-    label: "Test",
-    to: "/test",
-  },
-]);
 </script>
 
 <template>
   <div class="flex flex-col h-screen p-4">
     <header class="flex flex-row w-full justify-center space-x-4">
-      <UNavigationMenu :items="items"></UNavigationMenu>
-      <UButton
-        :icon="mode === 'dark' ? 'i-lucide-moon' : 'i-lucide-sun'"
-        color="neutral"
-        variant="ghost"
-        @click="mode = mode === 'dark' ? 'light' : 'dark'"
-      />
-      <UButton
+      <RouterLink to="/home">Home</RouterLink>
+      <RouterLink to="/about">About</RouterLink>
+      <RouterLink to="/test">Test</RouterLink>
+
+      <MainButton
         :loading="loading"
-        :label="loggedIn ? 'Open Chat' : 'Login'"
         @click="
           () => {
             if (loggedIn) {
@@ -68,6 +51,7 @@ const items = ref<NavigationMenuItem[]>([
             }
           }
         "
+        :label="loggedIn ? 'Open Chat' : 'Login'"
       />
     </header>
     <RouterView class="flex justify-center items-center flex-1" />

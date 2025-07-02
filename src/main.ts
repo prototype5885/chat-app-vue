@@ -1,7 +1,12 @@
 import { createApp } from "vue";
 import App from "./App.vue";
-import ui from "@nuxt/ui/vue-plugin";
+import PrimeVue from "primevue/config";
+import ConfirmationService from "primevue/confirmationservice";
+import Aura from "@primeuix/themes/aura";
 import { createRouter, createWebHistory } from "vue-router";
+import ToastPlugin from "vue-toast-notification";
+import Tooltip from "primevue/tooltip";
+import "vue-toast-notification/dist/theme-bootstrap.css";
 import Index from "./pages/Index.vue";
 import Home from "./pages/Home.vue";
 import About from "./pages/About.vue";
@@ -37,6 +42,16 @@ export const router = createRouter({
 const app = createApp(App);
 
 app.use(router);
-app.use(ui);
+
+app.use(PrimeVue, {
+  theme: {
+    preset: Aura,
+  },
+});
+app.use(ConfirmationService);
+
+app.use(ToastPlugin);
+
+app.directive("tooltip", Tooltip);
 
 app.mount("#app");

@@ -19,11 +19,11 @@ const emit = defineEmits(["picture-selected"]);
 <template>
   <div>
     <div
-      class="h-32 w-32 rounded-full bg-cover bg-center"
+      class="h-32 w-32 rounded-full bg-cover bg-center bg-black/40"
       :style="{
         backgroundImage: `url(${preview})`,
       }"
     ></div>
-    <UInput type="file" accept=".jpg,.png," @change="handleFileSelect" />
+    <input type="file" accept=".jpg,.png," @change="handleFileSelect" />
   </div>
 </template>

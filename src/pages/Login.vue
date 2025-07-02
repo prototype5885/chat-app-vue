@@ -3,7 +3,10 @@ import axios, { AxiosError } from "axios";
 import { router } from "@/main";
 import { reactive, ref } from "vue";
 import { MsgPackEncode } from "@/services/messagepack";
-import { ErrorToast } from "@/services/macros";
+import { useToast } from "vue-toast-notification";
+import MainButton from "@/components/MainButton.vue";
+import { RouterLink } from "vue-router";
+import FormInput from "@/components/FormInput.vue";
 
 interface LoginForm {
   email: string;
@@ -17,7 +20,10 @@ const loginForm = reactive<LoginForm>({
 
 const rememberMe = ref<boolean>(false);
 
+const errorResponse = ref<string>("");
+
 async function submit() {
+  errorResponse.value = "";
   let path = "/api/auth/login";
 
   if (rememberMe.value === true) {
@@ -34,39 +40,43 @@ async function submit() {
       }
     })
     .catch((e: AxiosError) => {
-      ErrorToast(e.message);
+      console.error(e);
+      if (e.isAxiosError && e.status === 401) {
+        errorResponse.value = "Wrong email or password";
+      }
+      useToast().error(e.message);
     });
 }
 </script>
 
 <template>
   <div>
-    <UForm
+    <form
       class="space-y-2 border rounded-2xl w-fit p-12"
       @submit.prevent="submit"
       :state="loginForm"
     >
-      <UFormField label="Email" name="email" required>
-        <UInput
-          v-model="loginForm.email"
-          placeholder="Enter your email"
-          class="w-64"
-        />
-      </UFormField>
-      <UFormField label="Password" name="password" required>
-        <UInput
-          v-model="loginForm.password"
-          placeholder="Enter your password"
-          class="w-64"
-          type="password"
-        />
-      </UFormField>
-      <UCheckbox v-model="rememberMe" label="Remember me" />
-      <UButton type="submit" loading-auto trailing>Login</UButton>
+      <FormInput
+        v-model="loginForm.email"
+        placeholder="Enter your email"
+        class="w-64"
+      />
+      <FormInput
+        v-model="loginForm.password"
+        placeholder="Enter your password"
+        class="w-64"
+        type="password"
+      />
+      <h1 class="text-red-500">{{ errorResponse }}</h1>
+      <div>
+        <label>Remember me</label>
+        <input type="checkbox" v-model="rememberMe" />
+      </div>
+      <MainButton type="submit" label="Login" />
       <div>
         <span>No account?</span>
-        <ULink to="/register">Register</ULink>
+        <RouterLink to="/register">Register</RouterLink>
       </div>
-    </UForm>
+    </form>
   </div>
 </template>
