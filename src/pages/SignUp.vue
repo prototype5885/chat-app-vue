@@ -57,19 +57,27 @@ async function submit() {
       <FormInput
         v-model="registerForm.email"
         placeholder="Enter your email"
+        type="text"
         :error="emailError"
       />
       <FormInput
         v-model="registerForm.password"
         placeholder="Enter a password"
+        type="password"
+        autocomplete="new-password"
         :error="passwordError"
       />
       <FormInput
         v-model="registerForm.confirmPassword"
         placeholder="Enter the password again"
+        type="password"
+        autocomplete="new-password"
         :error="passwordError"
       />
       <MainButton label="Sign up" type="submit" />
+      <h1 class="text-green-500" v-if="successResponse">
+        {{ successResponse }}
+      </h1>
 
       <div>
         <span>Already have an account?</span>

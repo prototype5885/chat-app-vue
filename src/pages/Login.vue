@@ -59,13 +59,16 @@ async function submit() {
       <FormInput
         v-model="loginForm.email"
         placeholder="Enter your email"
+        autocomplete="email"
+        type="text"
         class="w-64"
       />
       <FormInput
         v-model="loginForm.password"
         placeholder="Enter your password"
-        class="w-64"
+        autocomplete="current-password"
         type="password"
+        class="w-64"
       />
       <h1 class="text-red-500">{{ errorResponse }}</h1>
       <div>
