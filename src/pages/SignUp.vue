@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { router } from "@/main";
 import { reactive, ref } from "vue";
 import axios, { AxiosError } from "axios";
 import { MsgPackDecode, MsgPackEncode } from "@/services/messagepack";
@@ -23,16 +22,18 @@ const registerForm = reactive<SignUpForm>({
 const emailError = ref<string>("");
 const passwordError = ref<string>("");
 
+const successResponse = ref<string>("");
+
 async function submit() {
   emailError.value = "";
   passwordError.value = "";
 
   await axios
-    .post("/api/auth/register", MsgPackEncode(registerForm), {
-      responseType: "arraybuffer",
-    })
+    .post<string>("/api/auth/register", MsgPackEncode(registerForm))
     .then(function (resp) {
-      router.push("/login");
+      if (resp.data === "confirm_email") {
+        successResponse.value = "Check your email for confirmation";
+      }
     })
     .catch((e: AxiosError) => {
       if (e.status === 400) {
