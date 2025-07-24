@@ -152,7 +152,7 @@ const onRightClick = (event: Event, server: ServerModel) => {
       @contextmenu="onRightClick($event, server)"
     >
       <span v-if="server.picture == undefined || server.picture == ''">{{
-        server.name[0].toUpperCase()
+        server.name ? server.name[0].toUpperCase() : ""
       }}</span>
     </ServerBase>
 

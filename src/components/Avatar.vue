@@ -3,7 +3,7 @@ const props = defineProps<{
   size: string;
   pic: string;
   name: string;
-  pressed: () => Promise<void>;
+  pressed?: () => Promise<void>;
 }>();
 </script>
 
@@ -13,6 +13,6 @@ const props = defineProps<{
     :style="`background-image: url(/cdn/avatars/${pic}); min-width: ${size}px; max-width: ${size}px; min-height: ${size}px; max-height: ${size}px`"
     @click="pressed"
   >
-    <span v-if="!pic">{{ props.name[0].toUpperCase() }}</span>
+    <span v-if="!pic">{{ props.name ? props.name[0].toUpperCase() : "" }}</span>
   </button>
 </template>
