@@ -6,12 +6,15 @@ import { Settings } from "lucide-vue-next";
 import { ref } from "vue";
 import { useToast } from "vue-toast-notification";
 import Avatar from "@/components/Avatar.vue";
+import { settingsStore } from "@/piniaStores.ts";
 
 const user = ref<UserModel>({
   id: 0n,
   displayName: "",
   picture: "",
 });
+
+const settings = settingsStore();
 
 axios
   .get<Uint8Array>("/api/user/fetch?userID=self", {
@@ -37,7 +40,11 @@ axios
     </button>
 
     <div class="w-2/5 flex justify-evenly">
-      <button class="hover-bg hover:rounded-lg" v-tooltip.top="'User Settings'">
+      <button
+        class="hover-bg hover:rounded-lg"
+        v-tooltip.top="'User Settings'"
+        @click="settings.visibility = true"
+      >
         <Settings stroke-width="1" class="m-1" />
       </button>
     </div>

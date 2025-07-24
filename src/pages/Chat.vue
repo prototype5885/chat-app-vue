@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { router } from "@/main";
 import axios, { AxiosError } from "axios";
-import { onBeforeUnmount, watch } from "vue";
+import { onBeforeUnmount } from "vue";
 import { WebSocketService } from "@/services/websocketService";
 import MessageArea from "@/components/chat/MessageArea.vue";
 import MessageInput from "@/components/chat/MessageInput.vue";
@@ -9,6 +9,7 @@ import Top from "@/components/chat/Top.vue";
 import ServerList from "@/components/chat/ServerList.vue";
 import ChannelList from "@/components/chat/ChannelList.vue";
 import UserPanel from "@/components/chat/UserPanel.vue";
+import Settings from "@/components/chat/Settings.vue";
 
 const theme = "diskord";
 
@@ -37,6 +38,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+  <Settings :visibility="true" />
   <div class="flex flex-row h-screen select-none" :class="`theme-${theme}`">
     <!-- server list -->
     <div class="min-w-18 max-w-18 bg-black/45 overflow-y-auto scrollbar-hidden">

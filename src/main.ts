@@ -1,4 +1,5 @@
 import { createApp } from "vue";
+import { createPinia } from "pinia";
 import App from "./App.vue";
 import PrimeVue from "primevue/config";
 import ConfirmationService from "primevue/confirmationservice";
@@ -42,16 +43,14 @@ export const router = createRouter({
 const app = createApp(App);
 
 app.use(router);
-
 app.use(PrimeVue, {
   theme: {
     preset: Aura,
   },
 });
 app.use(ConfirmationService);
-
 app.use(ToastPlugin);
-
 app.directive("tooltip", Tooltip);
+app.use(createPinia());
 
 app.mount("#app");
