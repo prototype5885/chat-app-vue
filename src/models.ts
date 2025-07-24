@@ -26,3 +26,9 @@ export interface AddMessageModel {
   channelID: bigint;
   replyID?: bigint;
 }
+
+export interface UserModel {
+  id: bigint;
+  displayName: string;
+  picture: string;
+}
