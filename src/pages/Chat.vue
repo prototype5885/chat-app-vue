@@ -10,6 +10,7 @@ import ServerList from "@/components/chat/ServerList.vue";
 import ChannelList from "@/components/chat/ChannelList.vue";
 import UserPanel from "@/components/chat/UserPanel.vue";
 import Settings from "@/components/chat/Settings.vue";
+import MemberList from "@/components/chat/MemberList.vue";
 
 const theme = "diskord";
 
@@ -74,7 +75,13 @@ onBeforeUnmount(() => {
     <!-- members -->
     <div class="min-w-64 w-64 flex flex-col">
       <Top>above members</Top>
-      <div class="bg-black/20 flex-1"></div>
+      <div class="bg-black/20 flex-1">
+        <MemberList
+          v-if="props.channel"
+          :key="props.channel"
+          :channel-id="props.channel"
+        />
+      </div>
     </div>
   </div>
 </template>
