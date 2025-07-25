@@ -89,8 +89,8 @@ onUnmounted(() => {
         class="py-2"
         :message-id="msg.id"
         :user-id="msg.userID"
-        name="name"
-        pic=""
+        :name="msg.user.displayName"
+        :pic="msg.user.picture"
         :msg="msg.message"
       ></Message>
       <li ref="endDiv"></li>

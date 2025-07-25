@@ -28,7 +28,7 @@ async function pressed() {
           <!-- name -->
           <!-- <ContextMenu :model="userCtxMenu"> -->
           <span class="font-bold cursor-pointer content-center hover:underline">
-            {{ props.userId }}
+            {{ props.name }}
           </span>
           <!-- </ContextMenu> -->
           <!-- date -->

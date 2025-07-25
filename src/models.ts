@@ -19,6 +19,7 @@ export interface MessageModel {
   message: string;
   attachments: string[];
   edited: boolean;
+  user: UserModel;
 }
 
 export interface AddMessageModel {
