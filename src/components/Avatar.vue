@@ -9,7 +9,7 @@ const props = defineProps<{
 
 <template>
   <button
-    class="bg-cover bg-center rounded-full bg-black/15 hover:bg-blue-500 transition-all"
+    class="bg-cover bg-center rounded-full bg-black/15"
     :style="`background-image: url(/cdn/avatars/${pic}); min-width: ${size}px; max-width: ${size}px; min-height: ${size}px; max-height: ${size}px`"
     @click="pressed"
   >
