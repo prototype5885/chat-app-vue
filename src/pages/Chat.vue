@@ -12,6 +12,7 @@ import UserPanel from "@/components/chat/UserPanel.vue";
 import Settings from "@/components/chat/Settings.vue";
 import MemberList from "@/components/chat/MemberList.vue";
 import { settingsStore } from "@/piniaStores";
+import TransitionBounce from "@/components/transitions/TransitionBounce.vue";
 
 const theme = "diskord";
 
@@ -42,7 +43,10 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Settings v-if="settings.visibility" :class="`theme-${theme}`" />
+  <TransitionBounce>
+    <Settings v-if="settings.visibility" :class="`theme-${theme}`" />
+  </TransitionBounce>
+
   <div class="flex flex-row h-screen select-none" :class="`theme-${theme}`">
     <!-- server list -->
     <div class="min-w-18 max-w-18 bg-black/45 overflow-y-auto scrollbar-hidden">
