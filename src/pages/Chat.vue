@@ -11,6 +11,7 @@ import ChannelList from "@/components/chat/ChannelList.vue";
 import UserPanel from "@/components/chat/UserPanel.vue";
 import Settings from "@/components/chat/Settings.vue";
 import MemberList from "@/components/chat/MemberList.vue";
+import { settingsStore } from "@/piniaStores";
 
 const theme = "diskord";
 
@@ -18,6 +19,8 @@ const props = defineProps({
   server: String,
   channel: String,
 });
+
+const settings = settingsStore();
 
 console.debug("Getting session ID cookie...");
 await axios.get("/api/auth/newSession").catch((e: AxiosError) => {
@@ -39,7 +42,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Settings :visibility="true" />
+  <Settings v-if="settings.visibility" :class="`theme-${theme}`" />
   <div class="flex flex-row h-screen select-none" :class="`theme-${theme}`">
     <!-- server list -->
     <div class="min-w-18 max-w-18 bg-black/45 overflow-y-auto scrollbar-hidden">
