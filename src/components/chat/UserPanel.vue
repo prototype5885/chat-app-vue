@@ -7,7 +7,6 @@ import { ref } from "vue";
 import { useToast } from "vue-toast-notification";
 import Avatar from "@/components/Avatar.vue";
 import { settingsStore } from "@/piniaStores.ts";
-import { userInfoStore } from "@/piniaStores";
 
 const user = ref<UserModel>({
   id: 0n,
@@ -16,7 +15,6 @@ const user = ref<UserModel>({
 });
 
 const settings = settingsStore();
-const userInfo = userInfoStore();
 
 axios
   .get<Uint8Array>("/api/user/fetch?userID=self", {
@@ -24,7 +22,6 @@ axios
   })
   .then(function (res) {
     user.value = MsgPackDecode(res.data) as UserModel;
-    userInfo.displayName = user.value.displayName;
   })
   .catch((e: AxiosError) => {
     console.error(e);

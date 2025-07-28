@@ -5,9 +5,3 @@ export const settingsStore = defineStore("settings", {
     visibility: false,
   }),
 });
-
-export const userInfoStore = defineStore("userInfo", {
-  state: () => ({
-    displayName: "",
-  }),
-});

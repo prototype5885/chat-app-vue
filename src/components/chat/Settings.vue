@@ -12,8 +12,8 @@ const elements = [
   {
     label: "User Settings",
     children: [
-      { label: "My Account", component: AccountSettings },
       { label: "Profile", component: UserSettings },
+      { label: "My Account", component: AccountSettings },
     ],
   },
   {
