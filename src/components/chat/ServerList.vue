@@ -55,10 +55,14 @@ async function selectServer(serverID: bigint) {
 
 async function renameServer(serverID: bigint) {
   console.debug(`Renaming server ID ${serverID}`);
+
   axios
-    .post(
-      `/api/server/rename?serverID=${encodeURIComponent(String(serverID))}&name=${encodeURIComponent("new name")}`
-    )
+    .post("/api/server/rename", null, {
+      params: {
+        serverID: String(serverID),
+        name: "new name",
+      },
+    })
     .catch((e: AxiosError) => {
       console.error(e);
       useToast().error(e.message);
@@ -67,8 +71,13 @@ async function renameServer(serverID: bigint) {
 
 async function deleteServer(serverID: bigint) {
   console.debug(`Deleting server ID ${serverID}`);
+
   axios
-    .post(`/api/server/delete?serverID=${encodeURIComponent(String(serverID))}`)
+    .post("/api/server/delete", null, {
+      params: {
+        serverID: String(serverID),
+      },
+    })
     .catch((e: AxiosError) => {
       console.error(e);
       useToast().error(e.message);

@@ -21,13 +21,13 @@ const endDiv = ref<HTMLDivElement | null | undefined>();
 
 console.debug(`Getting message list for channel ID ${props.channelId}`);
 axios
-  .get<Uint8Array>(
-    `/api/message/fetch?channelID=${encodeURIComponent(props.channelId)}`,
-    {
-      responseType: "arraybuffer",
-      signal: controller.signal,
-    }
-  )
+  .get<Uint8Array>("/api/message/fetch", {
+    responseType: "arraybuffer",
+    signal: controller.signal,
+    params: {
+      channelID: props.channelId,
+    },
+  })
   .then(function (response) {
     messageList.value = MsgPackDecode(response.data) as MessageModel[];
     loading.value = false;

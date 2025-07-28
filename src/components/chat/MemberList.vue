@@ -16,13 +16,13 @@ const loading = ref<boolean>(true);
 
 console.debug(`Getting members of channel ID ${props.channelId}`);
 axios
-  .get<Uint8Array>(
-    `/api/members/fetch?channelID=${encodeURIComponent(props.channelId)}`,
-    {
-      responseType: "arraybuffer",
-      signal: controller.signal,
-    }
-  )
+  .get<Uint8Array>("/api/members/fetch", {
+    responseType: "arraybuffer",
+    signal: controller.signal,
+    params: {
+      channelID: props.channelId,
+    },
+  })
   .then(function (response) {
     memberList.value = MsgPackDecode(response.data) as UserModel[];
     loading.value = false;

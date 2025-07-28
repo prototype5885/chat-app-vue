@@ -37,11 +37,12 @@ function submit() {
   }
 
   axios
-    .post<Uint8Array>(
-      `/api/server/create?name=${encodeURIComponent(createServer.name)}`,
-      formData,
-      { responseType: "arraybuffer" }
-    )
+    .post<Uint8Array>("/api/server/create", formData, {
+      responseType: "arraybuffer",
+      params: {
+        name: createServer.name,
+      },
+    })
     .then(function (response) {
       const server = MsgPackDecode(response.data) as ServerModel;
       serverList.value.push(server);

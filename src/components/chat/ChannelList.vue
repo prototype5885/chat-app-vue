@@ -22,13 +22,13 @@ const channels = ref<ChannelModel[]>([]);
 
 console.debug(`Getting channels for server ID ${props.serverId}`);
 axios
-  .get<Uint8Array>(
-    `/api/channel/fetch?serverID=${encodeURIComponent(props.serverId)}`,
-    {
-      responseType: "arraybuffer",
-      signal: controller.signal,
-    }
-  )
+  .get<Uint8Array>("/api/channel/fetch", {
+    responseType: "arraybuffer",
+    signal: controller.signal,
+    params: {
+      serverID: props.serverId,
+    },
+  })
   .then(function (res) {
     channels.value = MsgPackDecode(res.data) as ChannelModel[];
 
@@ -55,11 +55,13 @@ axios
   });
 
 function addChannel() {
-  const currentServer = encodeURIComponent(props.serverId);
-  const channelName = encodeURIComponent("New Channel"); // temporary
-
   axios
-    .post(`/api/channel/create?serverID=${currentServer}&name=${channelName}`)
+    .post("/api/channel/create", null, {
+      params: {
+        serverID: props.serverId,
+        name: "New Channel", // temporary
+      },
+    })
     .catch((e: AxiosError) => {
       console.error(e);
       useToast().error(e.message);
