@@ -4,10 +4,9 @@ import type { ServerModel } from "@/models";
 import { MsgPackDecode } from "@/services/messagepack";
 import axios, { AxiosError } from "axios";
 import { Mail } from "lucide-vue-next";
-import { ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useConfirm } from "primevue/useconfirm";
-
 import ConfirmPopup from "primevue/confirmpopup";
 import CreateServer from "@/components/chat/CreateServer.vue";
 import ServerBase from "@/components/chat/ServerBase.vue";
@@ -15,6 +14,7 @@ import Separator from "@/components/Separator.vue";
 import { useToast } from "vue-toast-notification";
 import type { MenuItem } from "primevue/menuitem";
 import ContextMenu from "primevue/contextmenu";
+import { WebSocketService } from "@/services/websocketService";
 
 const route = useRoute();
 const confirm = useConfirm();
@@ -132,6 +132,20 @@ const onRightClick = (event: Event, server: ServerModel) => {
   rightClickedServer.value = server;
   ctxMenu.value.show(event);
 };
+
+onMounted(() => {
+  WebSocketService.emitter.on("ServerDeleted", serverDeleted);
+});
+
+function serverDeleted(serverID: bigint) {
+  serverList.value = serverList.value.filter(
+    (server) => server.id !== serverID
+  );
+}
+
+onUnmounted(() => {
+  WebSocketService.emitter.on("ServerDeleted", serverDeleted);
+});
 </script>
 
 <template>

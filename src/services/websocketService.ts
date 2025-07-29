@@ -16,7 +16,7 @@ const types = {
 };
 
 type EmitterEvents = {
-  ServerDeleted: string;
+  ServerDeleted: bigint;
   ServerModified: ServerModel;
 
   ChannelCreated: ChannelModel;
