@@ -13,6 +13,7 @@ import Settings from "@/components/chat/Settings.vue";
 import MemberList from "@/components/chat/MemberList.vue";
 import { settingsStore } from "@/piniaStores";
 import TransitionBounce from "@/components/transitions/TransitionBounce.vue";
+import ContextMenu from "@/components/ContextMenu.vue";
 
 const theme = "diskord";
 
@@ -46,6 +47,8 @@ onBeforeUnmount(() => {
   <TransitionBounce>
     <Settings v-if="settings.visibility" :class="`theme-${theme}`" />
   </TransitionBounce>
+
+  <ContextMenu />
 
   <div class="flex flex-row h-screen select-none" :class="`theme-${theme}`">
     <!-- server list -->

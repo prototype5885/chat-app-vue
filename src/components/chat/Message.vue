@@ -16,21 +16,28 @@ async function pressed() {
 </script>
 
 <template>
-  <li>
-    <!-- <ContextMenu :model="messageCtxMenu"> -->
+  <li class="ctx-menu" ctx-type="message" :msg-id="messageId">
     <div class="flex flex-row px-3 py-1 hover-bg select-text">
       <!-- avatar -->
-      <!-- <ContextMenu :model="userCtxMenu"> -->
-      <Avatar size="40" :pic="pic" :name="name" :pressed="pressed" />
-      <!-- </ContextMenu> -->
+      <Avatar
+        size="40"
+        :pic="pic"
+        :name="name"
+        :pressed="pressed"
+        class="ctx-menu"
+        ctx-type="user"
+        :user-id="userId"
+      />
       <div class="flex flex-col pl-3">
         <div class="flex flex-row">
           <!-- name -->
-          <!-- <ContextMenu :model="userCtxMenu"> -->
-          <span class="font-bold cursor-pointer content-center hover:underline">
+          <span
+            class="ctx-menu font-bold cursor-pointer content-center hover:underline"
+            ctx-type="user"
+            :user-id="userId"
+          >
             {{ props.name }}
           </span>
-          <!-- </ContextMenu> -->
           <!-- date -->
           <span
             class="ml-2 text-xs text-white/50 content-center cursor-default"
@@ -42,6 +49,5 @@ async function pressed() {
         <span class="break-all">{{ props.msg }}</span>
       </div>
     </div>
-    <!-- </ContextMenu> -->
   </li>
 </template>

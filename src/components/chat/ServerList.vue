@@ -7,13 +7,10 @@ import { Mail } from "lucide-vue-next";
 import { onMounted, onUnmounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useConfirm } from "primevue/useconfirm";
-import ConfirmPopup from "primevue/confirmpopup";
 import CreateServer from "@/components/chat/CreateServer.vue";
 import ServerBase from "@/components/chat/ServerBase.vue";
 import Separator from "@/components/Separator.vue";
 import { useToast } from "vue-toast-notification";
-import type { MenuItem } from "primevue/menuitem";
-import ContextMenu from "primevue/contextmenu";
 import { WebSocketService } from "@/services/websocketService";
 
 const route = useRoute();
@@ -53,86 +50,6 @@ async function selectServer(serverID: bigint) {
   await router.push(`/chat/${serverID}`);
 }
 
-async function renameServer(serverID: bigint) {
-  console.debug(`Renaming server ID ${serverID}`);
-
-  axios
-    .post("/api/server/rename", null, {
-      params: {
-        serverID: String(serverID),
-        name: "new name",
-      },
-    })
-    .catch((e: AxiosError) => {
-      console.error(e);
-      useToast().error(e.message);
-    });
-}
-
-async function deleteServer(serverID: bigint) {
-  console.debug(`Deleting server ID ${serverID}`);
-
-  axios
-    .post("/api/server/delete", null, {
-      params: {
-        serverID: String(serverID),
-      },
-    })
-    .catch((e: AxiosError) => {
-      console.error(e);
-      useToast().error(e.message);
-    });
-}
-
-const confirmDeletion = (server: ServerModel) => {
-  confirm.require({
-    message: `Delete "${server.name}"?`,
-    icon: "pi pi-info-circle",
-    rejectProps: {
-      label: "Cancel",
-      severity: "secondary",
-      outlined: true,
-    },
-    acceptProps: {
-      label: "Delete",
-      severity: "danger",
-    },
-    accept: () => {
-      deleteServer(server.id);
-    },
-    reject: () => {},
-  });
-};
-
-// context menu
-const rightClickedServer = ref<ServerModel>();
-const ctxMenu = ref();
-
-const serverCtxMenu = ref<MenuItem[]>([
-  {
-    label: "Rename server",
-    command: () => {
-      if (!rightClickedServer.value) return;
-      renameServer(rightClickedServer.value.id);
-    },
-  },
-  {
-    separator: true,
-  },
-  {
-    label: "Delete server",
-    command: () => {
-      if (!rightClickedServer.value) return;
-      confirmDeletion(rightClickedServer.value);
-    },
-  },
-]);
-
-const onRightClick = (event: Event, server: ServerModel) => {
-  rightClickedServer.value = server;
-  ctxMenu.value.show(event);
-};
-
 onMounted(() => {
   WebSocketService.emitter.on("ServerDeleted", serverDeleted);
 });
@@ -149,8 +66,6 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <ConfirmPopup />
-  <ContextMenu ref="ctxMenu" :model="serverCtxMenu"></ContextMenu>
   <ul class="flex flex-col items-center py-2">
     <!-- dm button -->
     <ServerBase
@@ -172,7 +87,9 @@ onUnmounted(() => {
       :picture="server.picture"
       :selected="isServerSelected(server.id)"
       @clicked="selectServer(server.id)"
-      @contextmenu="onRightClick($event, server)"
+      class="ctx-menu"
+      ctx-type="server"
+      :server-id="server.id"
     >
       <span v-if="server.picture == undefined || server.picture == ''">{{
         server.name ? server.name[0].toUpperCase() : ""
