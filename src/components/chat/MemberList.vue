@@ -51,6 +51,7 @@ onUnmounted(() => {
       v-for="member in memberList"
       :display-name="member.displayName"
       :picture="member.picture"
+      size="32"
       class="ctx-menu"
       ctx-type="user"
       :user-id="member.id"
