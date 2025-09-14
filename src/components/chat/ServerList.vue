@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { router } from "@/main";
 import type { ServerModel } from "@/models";
-import { MsgPackDecode } from "@/services/messagepack";
 import axios, { AxiosError } from "axios";
 import { Mail } from "lucide-vue-next";
 import { onMounted, onUnmounted, ref } from "vue";
@@ -16,14 +15,14 @@ import { WebSocketService } from "@/services/websocketService";
 const route = useRoute();
 const confirm = useConfirm();
 
-const DM: bigint = 100n;
+const DM: string = "100";
 const serverList = ref<ServerModel[]>([]);
 
 console.debug("Getting list of servers...");
 axios
-  .get<Uint8Array>("/api/server/fetch", { responseType: "arraybuffer" })
-  .then(function (response) {
-    serverList.value = MsgPackDecode(response.data) as ServerModel[];
+  .get<ServerModel[]>("/api/server/fetch")
+  .then(function (res) {
+    serverList.value = res.data;
   })
   .catch((e: AxiosError) => {
     if (e.status === 401) {
@@ -40,11 +39,11 @@ if (route.params.server === undefined || route.params.server === "") {
   selectServer(DM);
 }
 
-function isServerSelected(serverID: bigint): boolean {
-  return serverID.toString() === String(route.params.server) ? true : false;
+function isServerSelected(serverID: string): boolean {
+  return serverID === String(route.params.server) ? true : false;
 }
 
-async function selectServer(serverID: bigint) {
+async function selectServer(serverID: string) {
   if (isServerSelected(serverID)) return;
   console.debug(`Selecting server ID ${serverID}`);
   await router.push(`/chat/${serverID}`);
@@ -54,7 +53,7 @@ onMounted(() => {
   WebSocketService.emitter.on("ServerDeleted", serverDeleted);
 });
 
-function serverDeleted(serverID: bigint) {
+function serverDeleted(serverID: string) {
   serverList.value = serverList.value.filter(
     (server) => server.id !== serverID
   );
@@ -102,7 +101,7 @@ onUnmounted(() => {
     <CreateServer
       v-model="serverList"
       @created-server="
-        (serverID: bigint) => {
+        (serverID: string) => {
           selectServer(serverID);
         }
       "

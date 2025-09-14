@@ -1,10 +1,10 @@
-function extractDateFromId(id: bigint): Date {
-  const timestamp = id >> 22n;
+function extractDateFromId(id: string): Date {
+  const timestamp = BigInt(id) >> 22n;
   const time = timestamp;
   return new Date(Number(time));
 }
 
-export function extractDate(id: bigint, format: string): string {
+export function extractDate(id: string, format: string): string {
   let options: Intl.DateTimeFormatOptions = {};
 
   switch (format) {

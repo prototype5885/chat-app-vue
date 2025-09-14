@@ -40,8 +40,8 @@ function showContextMenu(event: MouseEvent): void {
 
   switch (type) {
     case "message":
-      const messageID: bigint = BigInt(element?.getAttribute("msg-id") ?? 0n);
-      if (messageID === 0n) {
+      const messageID: string = element?.getAttribute("msg-id") ?? "0";
+      if (messageID === "0") {
         useToast().error("Message has no ID");
         visible.value = false;
         return;
@@ -65,8 +65,8 @@ function showContextMenu(event: MouseEvent): void {
       menuItems.value = messageItems;
       break;
     case "user":
-      const userID: bigint = BigInt(element?.getAttribute("user-id") ?? 0n);
-      if (userID === 0n) {
+      const userID: string = element?.getAttribute("user-id") ?? "0";
+      if (userID === "0") {
         useToast().error("User has no ID");
         visible.value = false;
         return;
@@ -92,8 +92,8 @@ function showContextMenu(event: MouseEvent): void {
       menuItems.value = userItems;
       break;
     case "server":
-      const serverID: bigint = BigInt(element?.getAttribute("server-id") ?? 0n);
-      if (serverID === 0n) {
+      const serverID: string = element?.getAttribute("server-id") ?? "0";
+      if (serverID === "0") {
         useToast().error("Server has no ID");
         visible.value = false;
         return;

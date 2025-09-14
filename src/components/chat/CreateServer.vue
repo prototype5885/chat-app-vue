@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { ServerModel } from "@/models";
-import { MsgPackDecode } from "@/services/messagepack";
 import axios, { AxiosError } from "axios";
 import { Plus } from "lucide-vue-next";
 import { onUpdated, reactive, ref } from "vue";
@@ -37,14 +36,13 @@ function submit() {
   }
 
   axios
-    .post<Uint8Array>("/api/server/create", formData, {
-      responseType: "arraybuffer",
+    .post<ServerModel>("/api/server/create", formData, {
       params: {
         name: createServer.name,
       },
     })
-    .then(function (response) {
-      const server = MsgPackDecode(response.data) as ServerModel;
+    .then(function (res) {
+      const server = res.data;
       serverList.value.push(server);
       editWindowVisible.value = false;
       emit("created-server", server.id);

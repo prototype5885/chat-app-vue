@@ -2,7 +2,6 @@
 import { ref, watch } from "vue";
 import axios, { AxiosError } from "axios";
 import type { AddMessageModel } from "@/models";
-import { MsgPackEncode } from "@/services/messagepack";
 import AddAttachment from "@/components/icons/AddAttachment.vue";
 import MessageTyping from "@/components/chat/MessageTyping.vue";
 import AutoResizeTextarea from "@/components/AutoResizeTextarea.vue";
@@ -39,11 +38,11 @@ function sendMsg() {
   if (chatInput.value) {
     const message: AddMessageModel = {
       message: chatInput.value,
-      channelID: BigInt(props.channelId),
+      channelID: props.channelId,
     };
 
     axios
-      .post("/api/message/create", MsgPackEncode(message))
+      .post("/api/message/create", message)
       .then(() => {
         chatInput.value = "";
       })

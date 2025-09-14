@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import axios, { AxiosError } from "axios";
-import { MsgPackDecode, MsgPackEncode } from "@/services/messagepack";
 import { useToast } from "vue-toast-notification";
 import MainButton from "@/components/MainButton.vue";
 import FormInput from "@/components/FormInput.vue";
@@ -29,7 +28,7 @@ async function submit() {
   passwordError.value = "";
 
   await axios
-    .post<string>("/api/auth/register", MsgPackEncode(registerForm))
+    .post<string>("/api/auth/register", registerForm)
     .then(function (resp) {
       if (resp.data === "confirm_email") {
         successResponse.value = "Check your email for confirmation";
@@ -37,7 +36,7 @@ async function submit() {
     })
     .catch((e: AxiosError) => {
       if (e.status === 400) {
-        const response = MsgPackDecode(e.response?.data as Uint8Array);
+        const response = e.response?.data as any;
         emailError.value = response["Email"];
         passwordError.value = response["Password"];
       } else {

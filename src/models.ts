@@ -1,21 +1,21 @@
 export interface ServerModel {
-  id: bigint;
-  ownerID: bigint;
+  id: string;
+  ownerID: string;
   name: string;
   picture: string;
   banner: string;
 }
 
 export interface ChannelModel {
-  id: bigint;
-  serverID: bigint;
+  id: string;
+  serverID: string;
   name: string;
 }
 
 export interface MessageModel {
-  id: bigint;
-  channelID: bigint;
-  userID: bigint;
+  id: string;
+  channelID: string;
+  userID: string;
   message: string;
   attachments: string[];
   edited: boolean;
@@ -24,12 +24,12 @@ export interface MessageModel {
 
 export interface AddMessageModel {
   message: string;
-  channelID: bigint;
-  replyID?: bigint;
+  channelID: string;
+  replyID?: string;
 }
 
 export interface UserModel {
-  id: bigint;
+  id: string;
   displayName: string;
   picture: string;
 }

@@ -3,7 +3,6 @@ import type { MessageModel } from "@/models.ts";
 import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import axios, { AxiosError } from "axios";
 import { WebSocketService } from "@/services/websocketService";
-import { MsgPackDecode } from "@/services/messagepack";
 import GhostMessages from "./GhostMessages.vue";
 import Message from "./Message.vue";
 import { useToast } from "vue-toast-notification";
@@ -21,15 +20,14 @@ const endDiv = ref<HTMLDivElement | null | undefined>();
 
 console.debug(`Getting message list for channel ID ${props.channelId}`);
 axios
-  .get<Uint8Array>("/api/message/fetch", {
-    responseType: "arraybuffer",
+  .get<MessageModel[]>("/api/message/fetch", {
     signal: controller.signal,
     params: {
       channelID: props.channelId,
     },
   })
-  .then(function (response) {
-    messageList.value = MsgPackDecode(response.data) as MessageModel[];
+  .then(function (res) {
+    messageList.value = res.data;
     loading.value = false;
   })
   .catch((e: AxiosError) => {
@@ -61,7 +59,7 @@ function messageAdded(message: MessageModel) {
   messageList.value.push(message);
 }
 
-function messageDeleted(messageID: bigint) {
+function messageDeleted(messageID: string) {
   for (let i = 0; i < messageList.value.length; i++) {
     if (messageList.value[i].id === messageID) {
       messageList.value.splice(i, 1);

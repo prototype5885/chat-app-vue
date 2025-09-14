@@ -2,7 +2,6 @@
 import axios, { AxiosError } from "axios";
 import { router } from "@/main";
 import { reactive, ref } from "vue";
-import { MsgPackEncode } from "@/services/messagepack";
 import { useToast } from "vue-toast-notification";
 import MainButton from "@/components/MainButton.vue";
 import { RouterLink } from "vue-router";
@@ -31,9 +30,7 @@ async function submit() {
   }
 
   await axios
-    .post(path, MsgPackEncode(loginForm), {
-      responseType: "arraybuffer",
-    })
+    .post(path, loginForm)
     .then(function (response) {
       if (response.status === 200) {
         router.push("/chat");

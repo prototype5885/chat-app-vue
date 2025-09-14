@@ -3,7 +3,6 @@ import { reactive, ref } from "vue";
 import ProfilePicUploader from "@/components/chat/ProfilePicUploader.vue";
 import axios, { AxiosError } from "axios";
 import { useToast } from "vue-toast-notification";
-import { MsgPackDecode } from "@/services/messagepack";
 import type { UserModel } from "@/models";
 
 interface UpdateUserSettingsForm {
@@ -17,17 +16,15 @@ const newUserInfo = reactive<UpdateUserSettingsForm>({
 });
 
 const existingUserInfo = ref<UserModel>({
-  id: 0n,
+  id: "0",
   displayName: "",
   picture: "",
 });
 
 await axios
-  .get<Uint8Array>("/api/user/fetch?userID=self", {
-    responseType: "arraybuffer",
-  })
+  .get<UserModel>("/api/user/fetch?userID=self")
   .then(function (res) {
-    existingUserInfo.value = MsgPackDecode(res.data) as UserModel;
+    existingUserInfo.value = res.data;
     newUserInfo.displayName = existingUserInfo.value.displayName;
   })
   .catch((e: AxiosError) => {
@@ -47,8 +44,7 @@ function submit() {
   if (NameChanged()) params.append("displayName", newUserInfo.displayName);
 
   axios
-    .post<Uint8Array>("/api/user/update", formData, {
-      responseType: "arraybuffer",
+    .post("/api/user/update", formData, {
       params: params,
     })
     .then(function (response) {

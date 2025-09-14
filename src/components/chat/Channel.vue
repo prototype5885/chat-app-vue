@@ -3,7 +3,7 @@ import { Hash } from "lucide-vue-next";
 import { defineProps } from "vue";
 
 const props = defineProps<{
-  id: bigint;
+  id: string;
   name: string;
   selected: boolean;
 }>();

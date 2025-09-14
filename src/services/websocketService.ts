@@ -1,5 +1,4 @@
 import type { ChannelModel, MessageModel, ServerModel } from "@/models";
-import { decode } from "@msgpack/msgpack";
 import mitt from "mitt";
 
 const types = {
@@ -16,7 +15,7 @@ const types = {
 };
 
 type EmitterEvents = {
-  ServerDeleted: bigint;
+  ServerDeleted: string;
   ServerModified: ServerModel;
 
   ChannelCreated: ChannelModel;
@@ -24,7 +23,7 @@ type EmitterEvents = {
   ChannelModified: ChannelModel;
 
   MessageCreated: MessageModel;
-  MessageDeleted: bigint;
+  MessageDeleted: string;
   MessageModified: MessageModel;
 };
 
@@ -57,10 +56,11 @@ export class WebSocketService {
           return;
         }
 
+        const decoder = new TextDecoder('utf-8');
+        const jsonString = decoder.decode(receivedBytes.slice(1, receivedBytes.length));
+
         const type = receivedBytes[0];
-        const msg = decode(receivedBytes.slice(1, receivedBytes.length), {
-          useBigInt64: true,
-        }) as any;
+        const msg = JSON.parse(jsonString);
 
         switch (type) {
           case types.ServerDeleted:

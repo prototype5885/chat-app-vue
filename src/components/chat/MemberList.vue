@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { UserModel } from "@/models";
-import { MsgPackDecode } from "@/services/messagepack";
 import axios, { AxiosError } from "axios";
 import { onUnmounted, ref } from "vue";
 import { useToast } from "vue-toast-notification";
@@ -16,15 +15,14 @@ const loading = ref<boolean>(true);
 
 console.debug(`Getting members of channel ID ${props.channelId}`);
 axios
-  .get<Uint8Array>("/api/members/fetch", {
-    responseType: "arraybuffer",
+  .get<UserModel[]>("/api/members/fetch", {
     signal: controller.signal,
     params: {
       channelID: props.channelId,
     },
   })
-  .then(function (response) {
-    memberList.value = MsgPackDecode(response.data) as UserModel[];
+  .then(function (res) {
+    memberList.value = res.data;
     loading.value = false;
   })
   .catch((e: AxiosError) => {

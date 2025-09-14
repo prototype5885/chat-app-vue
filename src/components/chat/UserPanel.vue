@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { UserModel } from "@/models";
-import { MsgPackDecode } from "@/services/messagepack";
 import axios, { AxiosError } from "axios";
 import { Settings } from "lucide-vue-next";
 import { ref } from "vue";
@@ -9,7 +8,7 @@ import Avatar from "@/components/Avatar.vue";
 import { settingsStore } from "@/piniaStores.ts";
 
 const user = ref<UserModel>({
-  id: 0n,
+  id: "0",
   displayName: "",
   picture: "",
 });
@@ -17,11 +16,9 @@ const user = ref<UserModel>({
 const settings = settingsStore();
 
 axios
-  .get<Uint8Array>("/api/user/fetch?userID=self", {
-    responseType: "arraybuffer",
-  })
+  .get<UserModel>("/api/user/fetch?userID=self")
   .then(function (res) {
-    user.value = MsgPackDecode(res.data) as UserModel;
+    user.value = res.data;
   })
   .catch((e: AxiosError) => {
     console.error(e);

@@ -3,8 +3,8 @@ import { extractDate } from "@/services/snowflakeService";
 import Avatar from "@/components/Avatar.vue";
 
 const props = defineProps<{
-  messageId: bigint;
-  userId: bigint;
+  messageId: string;
+  userId: string;
   name: string;
   pic: string;
   msg: string;

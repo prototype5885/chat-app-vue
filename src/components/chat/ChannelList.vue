@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { router } from "@/main";
 import type { ChannelModel } from "@/models";
-import { MsgPackDecode } from "@/services/messagepack";
 import { WebSocketService } from "@/services/websocketService";
 import axios, { AxiosError } from "axios";
 import { Plus } from "lucide-vue-next";
@@ -22,22 +21,21 @@ const channels = ref<ChannelModel[]>([]);
 
 console.debug(`Getting channels for server ID ${props.serverId}`);
 axios
-  .get<Uint8Array>("/api/channel/fetch", {
-    responseType: "arraybuffer",
+  .get<ChannelModel[]>("/api/channel/fetch", {
     signal: controller.signal,
     params: {
       serverID: props.serverId,
     },
   })
   .then(function (res) {
-    channels.value = MsgPackDecode(res.data) as ChannelModel[];
+    channels.value = res.data;
 
     if (channels.value.length !== 0) {
       const lastChannel = localStorage.getItem(
         "last-channel-on-" + props.serverId
       );
       if (lastChannel) {
-        selectChannel(BigInt(lastChannel));
+        selectChannel(lastChannel);
       } else {
         selectChannel(channels.value[0].id);
       }
@@ -68,7 +66,7 @@ function addChannel() {
     });
 }
 
-async function selectChannel(channelID: bigint) {
+async function selectChannel(channelID: string) {
   if (isChannelSelected(channelID)) return;
   localStorage.setItem(
     "last-channel-on-" + props.serverId,
@@ -78,8 +76,8 @@ async function selectChannel(channelID: bigint) {
   await router.push(`/chat/${props.serverId}/${channelID}`);
 }
 
-function isChannelSelected(channelID: bigint): boolean {
-  if (channelID.toString() === String(route.params.channel)) {
+function isChannelSelected(channelID: string): boolean {
+  if (channelID === String(route.params.channel)) {
     return true;
   }
   return false;

@@ -7,7 +7,7 @@ namespace Actions {
         useToast().error(e.message);
     }
 
-    export async function DeleteServer(serverID: bigint): Promise<void> {
+    export async function DeleteServer(serverID: string): Promise<void> {
         console.debug(`Deleting server ID ${serverID}`);
 
         await axios.post("/api/server/delete", null, {
@@ -20,7 +20,7 @@ namespace Actions {
             });
     }
 
-    export async function RenameServer(serverID: bigint): Promise<void> {
+    export async function RenameServer(serverID: string): Promise<void> {
         console.debug(`Renaming server ID ${serverID}`);
 
         await axios
