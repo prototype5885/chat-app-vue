@@ -25,12 +25,20 @@ async function submit() {
   errorResponse.value = "";
   let path = "/api/auth/login";
 
-  if (rememberMe.value === true) {
-    path += "?rememberMe=true";
+  interface Params {
+    rememberMe: boolean;
+    client: string; // so can differentiate from flutter
   }
 
+  let params: Params = {
+    rememberMe: rememberMe.value,
+    client: "vue",
+  };
+
   await axios
-    .post(path, loginForm)
+    .post(path, loginForm, {
+      params: params,
+    })
     .then(function (response) {
       if (response.status === 200) {
         router.push("/chat");
