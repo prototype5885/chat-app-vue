@@ -6,6 +6,7 @@ import { useToast } from "vue-toast-notification";
 import MainButton from "@/components/MainButton.vue";
 import { RouterLink } from "vue-router";
 import FormInput from "@/components/FormInput.vue";
+import { clientHeader } from "@/services/globals";
 
 interface LoginForm {
   email: string;
@@ -27,17 +28,16 @@ async function submit() {
 
   interface Params {
     rememberMe: boolean;
-    client: string; // so can differentiate from flutter
   }
 
   let params: Params = {
     rememberMe: rememberMe.value,
-    client: "vue",
   };
 
   await axios
     .post(path, loginForm, {
       params: params,
+      headers: clientHeader,
     })
     .then(function (response) {
       if (response.status === 200) {

@@ -1,0 +1,1 @@
+export const clientHeader = { Client: "Vue" }
