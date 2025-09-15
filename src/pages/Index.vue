@@ -13,7 +13,7 @@ const loggedIn = ref<boolean>(false);
 const loading = ref<boolean>(true);
 
 axios
-  .get("/api/isLoggedIn")
+  .get("/api/auth/isLoggedIn")
   .then(function (response) {
     if (response.status === 200) {
       loggedIn.value = true;
