@@ -15,6 +15,7 @@ import SignUp from "./pages/SignUp.vue";
 import Login from "./pages/Login.vue";
 import Test from "./pages/Test.vue";
 import Chat from "./pages/Chat.vue";
+import { WebSocketService } from "./services/websocketService";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -40,7 +41,16 @@ export const router = createRouter({
   ],
 });
 
-const app = createApp(App);
+const app = createApp({
+  extends: App, created() {
+    window.addEventListener("beforeunload", this.leaving);
+  },
+  methods: {
+    leaving() {
+      WebSocketService.Disconnect();
+    },
+  },
+});
 
 app.use(router);
 app.use(PrimeVue, {
