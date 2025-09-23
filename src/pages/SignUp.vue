@@ -12,6 +12,11 @@ interface SignUpForm {
   confirmPassword: string;
 }
 
+interface RegisterErrorResponse {
+  Email?: string;
+  Password?: string;
+}
+
 const registerForm = reactive<SignUpForm>({
   email: "",
   password: "",
@@ -36,9 +41,9 @@ async function submit() {
     })
     .catch((e: AxiosError) => {
       if (e.status === 400) {
-        const response = e.response?.data as any;
-        emailError.value = response["Email"];
-        passwordError.value = response["Password"];
+        const response = e.response?.data as RegisterErrorResponse;
+        emailError.value = response?.Email ?? "Email error";
+        passwordError.value = response?.Password ?? "Password error";
       } else {
         console.error(e);
         useToast().error(e.message);

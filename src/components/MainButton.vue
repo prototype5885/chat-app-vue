@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { ButtonHTMLAttributes } from "vue";
-
 const props = withDefaults(
   defineProps<{
     disabled?: boolean | undefined;

@@ -36,8 +36,6 @@ function submit() {
   const formData = new FormData();
   if (newUserInfo.picture != null) {
     formData.append("picture", newUserInfo.picture);
-  } else {
-    formData == null;
   }
 
   let params = new URLSearchParams();

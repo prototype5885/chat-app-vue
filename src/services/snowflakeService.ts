@@ -1,11 +1,7 @@
-function extractDateFromId(id: string): Date {
-  const timestamp = BigInt(id) >> 22n;
-  const time = timestamp;
-  return new Date(Number(time));
-}
+export type SnowflakeDateFormat = "short" | "medium" | "long";
 
-export function extractDate(id: string, format: string): string {
-  let options: Intl.DateTimeFormatOptions = {};
+export function extractDate(id: string, format: SnowflakeDateFormat): string {
+  const options: Intl.DateTimeFormatOptions = {};
 
   switch (format) {
     case "short": {
@@ -32,5 +28,7 @@ export function extractDate(id: string, format: string): string {
     }
   }
 
-  return extractDateFromId(id).toLocaleString(undefined, options);
+  const date = new Date(Number(BigInt(id) >> 22n));
+
+  return date.toLocaleString(undefined, options);
 }

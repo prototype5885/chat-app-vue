@@ -61,7 +61,7 @@ function messageAdded(message: MessageModel) {
 
 function messageDeleted(messageID: string) {
   for (let i = 0; i < messageList.value.length; i++) {
-    if (messageList.value[i].id === messageID) {
+    if (messageList.value[i]?.id === messageID) {
       messageList.value.splice(i, 1);
       return;
     }

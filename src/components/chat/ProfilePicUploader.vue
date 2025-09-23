@@ -9,13 +9,13 @@ const props = defineProps<{
 const preview = ref<string>(
   props.picture ? `"/cdn/avatars/${props.picture}"` : ""
 );
-const picture = defineModel<File | null>({ default: null });
+const selectedPicture = defineModel<File | null>({ default: null });
 
 let lastBlobUrl = "";
 
 function handleFileSelect(e: Event) {
   const input = e.target as HTMLInputElement;
-  if (input.files && input.files.length > 0) {
+  if (input.files && input.files[0]) {
     const file = input.files[0];
     if (
       file.type === "image/jpeg" ||
@@ -27,7 +27,7 @@ function handleFileSelect(e: Event) {
       }
       lastBlobUrl = URL.createObjectURL(file);
       preview.value = lastBlobUrl;
-      picture.value = file;
+      selectedPicture.value = file;
     } else {
       console.warn("Unsupported file format");
     }

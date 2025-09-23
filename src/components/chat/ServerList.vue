@@ -5,7 +5,6 @@ import axios, { AxiosError } from "axios";
 import { Mail } from "lucide-vue-next";
 import { onMounted, onUnmounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import { useConfirm } from "primevue/useconfirm";
 import CreateServer from "@/components/chat/CreateServer.vue";
 import ServerBase from "@/components/chat/ServerBase.vue";
 import Separator from "@/components/Separator.vue";
@@ -13,7 +12,6 @@ import { useToast } from "vue-toast-notification";
 import { WebSocketService } from "@/services/websocketService";
 
 const route = useRoute();
-const confirm = useConfirm();
 
 const DM: string = "100";
 const serverList = ref<ServerModel[]>([]);
@@ -91,7 +89,7 @@ onUnmounted(() => {
       :server-id="server.id"
     >
       <span v-if="server.picture == undefined || server.picture == ''">{{
-        server.name ? server.name[0].toUpperCase() : ""
+        server.name[0] ? server.name[0].toUpperCase() : "?"
       }}</span>
     </ServerBase>
 

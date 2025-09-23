@@ -1,13 +1,10 @@
 <script setup lang="ts">
 import { router } from "@/main";
 import { ref } from "vue";
-import { useColorMode } from "@vueuse/core";
 import axios, { AxiosError } from "axios";
 import { useToast } from "vue-toast-notification";
 import MainButton from "@/components/MainButton.vue";
 import { RouterLink } from "vue-router";
-
-const mode = useColorMode();
 
 const loggedIn = ref<boolean>(false);
 const loading = ref<boolean>(true);

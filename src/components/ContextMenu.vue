@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import Actions from "@/services/httpActions";
 import { onMounted, onUnmounted, ref } from "vue";
 import Separator from "./Separator.vue";
 import { useToast } from "vue-toast-notification";
+import * as httpActions from "@/services/httpActions";
 
 interface CtxMenuItemBase {
   type: "item" | "separator";
@@ -39,7 +39,7 @@ function showContextMenu(event: MouseEvent): void {
   const type: string = element?.getAttribute("ctx-type") ?? "";
 
   switch (type) {
-    case "message":
+    case "message": {
       const messageID: string = element?.getAttribute("msg-id") ?? "0";
       if (messageID === "0") {
         useToast().error("Message has no ID");
@@ -64,7 +64,8 @@ function showContextMenu(event: MouseEvent): void {
 
       menuItems.value = messageItems;
       break;
-    case "user":
+    }
+    case "user": {
       const userID: string = element?.getAttribute("user-id") ?? "0";
       if (userID === "0") {
         useToast().error("User has no ID");
@@ -91,7 +92,8 @@ function showContextMenu(event: MouseEvent): void {
 
       menuItems.value = userItems;
       break;
-    case "server":
+    }
+    case "server": {
       const serverID: string = element?.getAttribute("server-id") ?? "0";
       if (serverID === "0") {
         useToast().error("Server has no ID");
@@ -105,7 +107,7 @@ function showContextMenu(event: MouseEvent): void {
           label: "Edit server",
           color: "default",
           action: async () => {
-            await Actions.RenameServer(serverID);
+            await httpActions.RenameServer(serverID);
           },
         },
         {
@@ -113,13 +115,14 @@ function showContextMenu(event: MouseEvent): void {
           label: "Delete server",
           color: "red",
           action: async () => {
-            await Actions.DeleteServer(serverID);
+            await httpActions.DeleteServer(serverID);
           },
         },
       ];
 
       menuItems.value = serverItems;
       break;
+    }
     default: // if something was clicked that doesn't have ctx menu
       visible.value = false;
       return;
@@ -178,7 +181,7 @@ onUnmounted((): void => {
         >
           {{ item.label }}
         </li>
-        <Separator v-else-if="item.type === 'separator'" />
+        <Separator v-else-if="item.type === 'separator'" :key="item.type" />
       </template>
     </ul>
   </div>

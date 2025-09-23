@@ -30,7 +30,7 @@ axios
   .then(function (res) {
     channels.value = res.data;
 
-    if (channels.value.length !== 0) {
+    if (channels.value.length !== 0 && channels.value[0]) {
       const lastChannel = localStorage.getItem(
         "last-channel-on-" + props.serverId
       );
@@ -39,6 +39,10 @@ axios
       } else {
         selectChannel(channels.value[0].id);
       }
+    } else {
+      console.warn(
+        "There are no channels on the server? This shouldn't happen"
+      );
     }
   })
   .catch((e: AxiosError) => {
@@ -116,6 +120,7 @@ onUnmounted(() => {
       <ul class="flex flex-col">
         <Channel
           v-for="channel in channels"
+          :key="channel.id"
           :id="channel.id"
           :name="channel.name"
           :selected="isChannelSelected(channel.id)"

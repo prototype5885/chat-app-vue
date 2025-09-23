@@ -47,6 +47,7 @@ onUnmounted(() => {
     <UserDisplay
       v-else
       v-for="member in memberList"
+      :key="member.id"
       :display-name="member.displayName"
       :picture="member.picture"
       size="32"
