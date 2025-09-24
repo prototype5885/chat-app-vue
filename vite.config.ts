@@ -15,18 +15,18 @@ export default defineConfig({
   },
   server: {
     host: "127.0.0.1",
-    // port: 80,
+    port: 8080,
     proxy: {
       "/api": {
-        target: "http://localhost:5083",
+        target: "http://localhost:3000",
         changeOrigin: true,
       },
       "/cdn": {
-        target: "http://localhost:5083",
+        target: "http://localhost:3000",
         changeOrigin: true,
       },
       "/ws": {
-        target: "http://localhost:5083",
+        target: "http://localhost:3000",
         // changeOrigin: true,
         ws: true,
       },
