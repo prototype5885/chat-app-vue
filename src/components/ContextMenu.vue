@@ -84,7 +84,7 @@ function showContextMenu(event: MouseEvent): void {
           label: "Copy user ID",
           color: "default",
           action: () => {
-            navigator.clipboard.writeText(userID.toString());
+            navigator.clipboard.writeText(userID);
             useToast().info(`Copied user ID ${userID} to clipboard`);
           },
         },

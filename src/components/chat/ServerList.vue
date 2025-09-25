@@ -78,8 +78,7 @@ onUnmounted(() => {
     <!-- server list -->
     <ServerBase
       v-for="server in serverList"
-      :key="server.id.toString()"
-      :id="server.id"
+      :key="server.id"
       :name="server.name"
       :picture="server.picture"
       :selected="isServerSelected(server.id)"

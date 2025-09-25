@@ -72,10 +72,7 @@ function addChannel() {
 
 async function selectChannel(channelID: string) {
   if (isChannelSelected(channelID)) return;
-  localStorage.setItem(
-    "last-channel-on-" + props.serverId,
-    channelID.toString()
-  );
+  localStorage.setItem("last-channel-on-" + props.serverId, channelID);
   console.debug(`Selecting channel ID ${channelID}`);
   await router.push(`/chat/${props.serverId}/${channelID}`);
 }
