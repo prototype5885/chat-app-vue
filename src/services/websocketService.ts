@@ -26,7 +26,7 @@ export class WebSocketService {
         return;
       }
 
-      this.socket = new WebSocket(`wss://${window.location.host}/ws/`);
+      this.socket = new WebSocket(`ws://${window.location.host}/ws`);
 
       this.socket.onopen = () => {
         console.debug("WebSocket connection established.");
