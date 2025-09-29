@@ -5,6 +5,8 @@ import vue from "@vitejs/plugin-vue";
 import vueDevTools from "vite-plugin-vue-devtools";
 import tailwindcss from "@tailwindcss/vite";
 
+const backendAddress = "http://192.168.1.230:3000";
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [vue(), vueDevTools(), tailwindcss()],
@@ -18,16 +20,13 @@ export default defineConfig({
     port: 8080,
     proxy: {
       "/api": {
-        target: "http://localhost:3000",
-        changeOrigin: true,
+        target: backendAddress,
       },
       "/cdn": {
-        target: "http://localhost:3000",
-        changeOrigin: true,
+        target: backendAddress,
       },
       "/ws": {
-        target: "http://localhost:3000",
-        // changeOrigin: true,
+        target: backendAddress,
         ws: true,
       },
     },
