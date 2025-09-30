@@ -4,8 +4,7 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import vueDevTools from "vite-plugin-vue-devtools";
 import tailwindcss from "@tailwindcss/vite";
-
-const backendAddress = "http://192.168.1.230:3000";
+import { backendAddress } from "./backend";
 
 // https://vite.dev/config/
 export default defineConfig({
