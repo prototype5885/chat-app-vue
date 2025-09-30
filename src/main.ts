@@ -4,7 +4,7 @@ import App from "./App.vue";
 import PrimeVue from "primevue/config";
 import ConfirmationService from "primevue/confirmationservice";
 import Aura from "@primeuix/themes/aura";
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 import ToastPlugin from "vue-toast-notification";
 import Tooltip from "primevue/tooltip";
 import "vue-toast-notification/dist/theme-bootstrap.css";
@@ -18,7 +18,7 @@ import Chat from "./pages/Chat.vue";
 import { WebSocketService } from "./services/websocketService";
 
 export const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes: [
     {
       path: "/",
@@ -42,7 +42,8 @@ export const router = createRouter({
 });
 
 const app = createApp({
-  extends: App, created() {
+  extends: App,
+  created() {
     window.addEventListener("beforeunload", this.leaving);
   },
   methods: {
