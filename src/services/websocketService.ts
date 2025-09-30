@@ -26,7 +26,11 @@ export class WebSocketService {
         return;
       }
 
-      this.socket = new WebSocket(`ws://${window.location.host}/ws`);
+      const wsProtocol = window.location.protocol.startsWith("https")
+        ? "wss"
+        : "ws";
+
+      this.socket = new WebSocket(`${wsProtocol}://${window.location.host}/ws`);
 
       this.socket.onopen = () => {
         console.debug("WebSocket connection established.");
