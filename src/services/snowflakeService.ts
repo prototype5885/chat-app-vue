@@ -1,4 +1,5 @@
 export type SnowflakeDateFormat = "short" | "medium" | "long";
+const epoch = 1420070400000n
 
 export function extractDate(id: string, format: SnowflakeDateFormat): string {
   const options: Intl.DateTimeFormatOptions = {};
@@ -28,7 +29,7 @@ export function extractDate(id: string, format: SnowflakeDateFormat): string {
     }
   }
 
-  const date = new Date(Number(BigInt(id) >> 22n));
+  const date = new Date(Number((BigInt(id) >> 22n) + epoch));
 
   return date.toLocaleString(undefined, options);
 }
